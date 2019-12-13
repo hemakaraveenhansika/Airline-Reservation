@@ -1,7 +1,7 @@
 /*!
 
 =========================================================
-* Paper Dashboard React - v1.1.0
+* Paper LogingBoard React - v1.1.0
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/paper-dashboard-react
@@ -21,16 +21,12 @@ import React from "react";
 import PerfectScrollbar from "perfect-scrollbar";
 import { Route, Switch } from "react-router-dom";
 
-import DemoNavbar from "components/Navbars/DemoNavbar.jsx";
-import Footer from "components/Footer/Footer.jsx";
-import Sidebar from "components/Sidebar/Sidebar.jsx";
 
-import routes from "routes.js";
-import {admin_routes} from "routes.js";
+import routesAccess from "routesAccess";
 
 var ps;
 
-class Dashboard extends React.Component {
+class LogingBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -66,16 +62,11 @@ class Dashboard extends React.Component {
   render() {
     return (
       <div className="wrapper">
-        <Sidebar
-          {...this.props}
-          routes={admin_routes}
-          bgColor={this.state.backgroundColor}
-          activeColor={this.state.activeColor}
-        />
-        <div className="main-panel" ref={this.mainPanel}>
-          <DemoNavbar {...this.props} />
+
+        <div className="login-panel" ref={this.mainPanel}>
+ 
           <Switch>
-            {admin_routes.map((prop, key) => {
+            {routesAccess.map((prop, key) => {
               return (
                 <Route
                   path={prop.layout + prop.path}
@@ -93,4 +84,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard;
+export default LogingBoard;

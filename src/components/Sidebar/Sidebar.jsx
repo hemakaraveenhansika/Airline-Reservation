@@ -24,6 +24,7 @@ import PerfectScrollbar from "perfect-scrollbar";
 
 import logo from "logo.svg";
 
+
 var ps;
 
 class Sidebar extends React.Component {
@@ -56,24 +57,11 @@ class Sidebar extends React.Component {
         data-color={this.props.bgColor}
         data-active-color={this.props.activeColor}
       >
-        <div className="logo">
-          <a
-            href="https://www.creative-tim.com"
-            className="simple-text logo-mini"
-          >
-            <div className="logo-img">
-              <img src={logo} alt="react-logo" />
-            </div>
-          </a>
-          <a
-            href="https://www.creative-tim.com"
-            className="simple-text logo-normal"
-          >
-            Creative Tim
-          </a>
-        </div>
+        
         <div className="sidebar-wrapper" ref={this.sidebar}>
           <Nav>
+          <span style={{fontSize:"50px",paddingLeft:"20px"}}>&#9992;</span>
+          <span style={{fontSize:"25px", color:"#339bb9",fontWeight:"bold"}}> Air Express</span> 
             {this.props.routes.map((prop, key) => {
               return (
                 <li

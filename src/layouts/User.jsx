@@ -25,8 +25,9 @@ import DemoNavbar from "components/Navbars/DemoNavbar.jsx";
 import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
+
 import routes from "routes.js";
-import {admin_routes} from "routes.js";
+import {user_routes} from "routes.js";
 
 var ps;
 
@@ -68,14 +69,14 @@ class Dashboard extends React.Component {
       <div className="wrapper">
         <Sidebar
           {...this.props}
-          routes={admin_routes}
+          routes={routes}
           bgColor={this.state.backgroundColor}
           activeColor={this.state.activeColor}
         />
         <div className="main-panel" ref={this.mainPanel}>
           <DemoNavbar {...this.props} />
           <Switch>
-            {admin_routes.map((prop, key) => {
+            {routes.map((prop, key) => {
               return (
                 <Route
                   path={prop.layout + prop.path}
@@ -85,7 +86,18 @@ class Dashboard extends React.Component {
               );
             })}
           </Switch>
-
+          <Switch>
+            {user_routes.map((prop, key) => {
+              return (
+                <Route
+                  path={prop.layout + prop.path}
+                  component={prop.component}
+                  key={key}
+                />
+              );
+            })}
+          </Switch>
+          <Footer fluid />
         </div>
 
       </div>

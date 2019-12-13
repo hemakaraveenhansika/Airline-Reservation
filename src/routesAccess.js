@@ -18,51 +18,24 @@
 */
 
 
-import Home from "views/Home.jsx";
-import View from "views/View.jsx";
-import Flight from "views/Flight.jsx";
+import Login from "views/Login.jsx";
+import Signup from "views/Signup.jsx";
 
-import UserPage from "views/User.jsx";
-
-
-var routes = [
+var routesAccess = [
 
   {
-    path: "/home",
-    name: "Home",
+    path: "/login",
+    name: "Login",
     icon: "nc-icon nc-bank",
-    component: Home,
-    layout: "/user"
+    component: Login,
+    layout: "/access"
   },
   {
-    path: "/user-page",
-    name: "User Profile",
-    icon: "nc-icon nc-single-02",
-    component: UserPage,
-    layout: "/user"
-  }
-];
-
-var user_routes = [
-  {
-    path: "/view",
-    name: "View",
+    path: "/signup",
+    name: "signup",
     icon: "nc-icon nc-bank",
-    component: View,
-    layout: "/user"
+    component: Signup,
+    layout: "/access"
   }
 ];
-
-var admin_routes = [
-  {
-    path: "/flight",
-    name: "Flight",
-    icon: "nc-icon nc-bank",
-    component: Flight,
-    layout: "/admin"
-  }
-];
-
-export default routes;
-export {user_routes,admin_routes};
-
+export default routesAccess;
