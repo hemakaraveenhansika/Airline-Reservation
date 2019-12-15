@@ -22,11 +22,9 @@ import PerfectScrollbar from "perfect-scrollbar";
 import { Route, Switch } from "react-router-dom";
 
 import DemoNavbar from "components/Navbars/DemoNavbar.jsx";
-import Footer from "components/Footer/Footer.jsx";
 import Sidebar from "components/Sidebar/Sidebar.jsx";
 
-import routes from "routes.js";
-import {admin_routes} from "routes.js";
+import {admin_routes,admin_inner_routes} from "routes.js";
 
 var ps;
 
@@ -76,6 +74,17 @@ class Dashboard extends React.Component {
           <DemoNavbar {...this.props} />
           <Switch>
             {admin_routes.map((prop, key) => {
+              return (
+                <Route
+                  path={prop.layout + prop.path}
+                  component={prop.component}
+                  key={key}
+                />
+              );
+            })}
+          </Switch>
+          <Switch>
+            {admin_inner_routes.map((prop, key) => {
               return (
                 <Route
                   path={prop.layout + prop.path}

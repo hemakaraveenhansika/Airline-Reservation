@@ -65,50 +65,83 @@ time.setFullYear(now.getFullYear() - 18);
     },
   }))(TableRow);
 
-  function createData(plane_Name, model_Name, departure, arrival, departure_time, arrival_time,date,capacity) {
-    return { plane_Name, model_Name, departure, arrival, departure_time, arrival_time, date, capacity };
+  function createData(plane_Name, model_Name, departure, arrival, departure_time, arrival_time,date,capacity,gate_no) {
+    return { plane_Name, model_Name, departure, arrival, departure_time, arrival_time, date, capacity ,gate_no };
   }
 
   const rows = [
-    createData('p01', 'm01', 'colombo', 'w dc', "12.00","17.50","2019-12-28",125),
+    createData('p01', 'm01', 'colombo', 'w dc', "12.00","17.50","2019-12-28",125,5),
     
   ];
 
 
-class Flight extends React.Component {
+class Passenger extends React.Component {
   state = {
-    departure: null,
-    arrival: null,
-    classType: null,
-    passengers: null,
+    flightId: null,
     departureDate: null,
-    arrivalDate: null,
-
   };
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
   }
+
+  buildFlightOptions() {
+    var arr = [];
+    var flight_data=["f01","f02","f03","f04"]
+
+    for (const [index, value] of flight_data.entries()) {
+      arr.push(<option key={index} value={value} >{value}</option>)
+    }
+
+    return arr; 
+  }
+
+  handleChange = (event) => {
+    this.logs.unshift("change: " + event.target.value);
+
+    this.setState({
+        value: event.target.value,
+        events: this.logs.slice()
+    });
+  }
+
   submit() {
-    this.validate();
+    if(this.validate()){
+      
+    }
   }
+
   validate() {
-    
+    if (this.validator.allValid()) {
+      if (moment(this.state.departureDate) > moment(time)) {
+        return true;
+      }
+    } else {
+      this.validator.showMessages();
+      this.forceUpdate();
+    }
   }
+
   render() {
 
     const cardstyle = {
       marginTop:"100px",
     };
 
+    const inputstyle = {
+      width:"250px",
+    };
+
     const {
-      arrival,
-      departureDate,
-      arrivalDate,
-      departure,
-      classType,
-      passengers
+      flightId,
+      departureDate
     } = this.state;
+
+    const validFlightId = this.validator.message(
+      "flightId",
+      flightId,
+       "required"
+    );
 
     console.log(this.state.nic);
 
@@ -118,10 +151,54 @@ class Flight extends React.Component {
       <Card small className="mb-10 col-11" style={cardstyle}>
         <CardHeader className="border-bottom">
         <div className="search">
-          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"200px"}}>View Flight</label>
+          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"300px"}}>View Passenger</label>
         </div>
         </CardHeader>
-        <br/>
+        <Form><br/>
+            <Row form className="form-group pt-3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <Col md className="pl-0">
+                  <FormSelect
+                    onChange={e => {
+                      this.setState({
+                        flightId: e.target.value
+                      });
+                    }}
+                    invalid={validFlightId}
+                    style={inputstyle}
+                  >
+                    <option selected disabled value="" >Flight</option>
+                    {this.buildFlightOptions()}
+                  </FormSelect>
+                </Col>
+              <Col>
+                  <DatePicker
+                    placeholderText="Date"
+                    selected={departureDate}
+                    style={inputstyle}
+                    className=""
+                    onChange={e => {
+                      this.setState({
+                        departureDate: new Date(e)
+                      });
+                    }}
+                  />
+                </Col>
+              <Col form >
+                <Button
+                  style={{marginTop:"0px"}}
+                  theme="primary"
+                  className="mb-3"
+                  onClick={() => {
+                    this.submit();
+                  }}
+                >
+                  Search
+                </Button>
+            </Col>
+            </Row>
+
+          
+        </Form>
         <Col>
           <Form>   
             <br/>
@@ -129,14 +206,15 @@ class Flight extends React.Component {
               <Table className="tlb" aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell align="left" width="100px">Plane Name </StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Model Name </StyledTableCell>
+                    <StyledTableCell align="left" width="100px">Plane</StyledTableCell>
+                    <StyledTableCell align="left" width="100px">Model</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Departure </StyledTableCell>
                     <StyledTableCell align="left" width="100px">Arrival</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Departure Time&nbsp;</StyledTableCell>
+                    <StyledTableCell align="left" width="115px">Departure Time&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Arrival Time&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Date&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Capacity&nbsp;</StyledTableCell>
+                    <StyledTableCell align="left" width="100px">Gate No&nbsp;</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -150,6 +228,7 @@ class Flight extends React.Component {
                       <StyledTableCell align="left" >{row.arrival_time}</StyledTableCell>
                       <StyledTableCell align="left" >{row.date}</StyledTableCell>
                       <StyledTableCell align="left" >{row.capacity}</StyledTableCell>
+                      <StyledTableCell align="left" >{row.gate_no}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -165,4 +244,4 @@ class Flight extends React.Component {
   }
 }
 
-export default Flight;
+export default Passenger;

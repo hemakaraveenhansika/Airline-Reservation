@@ -65,17 +65,17 @@ time.setFullYear(now.getFullYear() - 18);
     },
   }))(TableRow);
 
-  function createData(plane_Name, model_Name, departure, arrival, departure_time, arrival_time,date,capacity) {
-    return { plane_Name, model_Name, departure, arrival, departure_time, arrival_time, date, capacity };
+  function createData(plane_Name, model_Name, departure, arrival, departure_time, arrival_time,date,capacity,gate_no) {
+    return { plane_Name, model_Name, departure, arrival, departure_time, arrival_time, date, capacity ,gate_no };
   }
 
   const rows = [
-    createData('p01', 'm01', 'colombo', 'w dc', "12.00","17.50","2019-12-28",125),
+    createData('p01', 'm01', 'colombo', 'w dc', "12.00","17.50","2019-12-28",125,5),
     
   ];
 
 
-class Flight extends React.Component {
+class Schedule extends React.Component {
   state = {
     departure: null,
     arrival: null,
@@ -90,11 +90,9 @@ class Flight extends React.Component {
     this.validator = new SimpleReactValidator();
   }
   submit() {
-    this.validate();
+    this.props.history.push('/admin/addschedule');
   }
-  validate() {
-    
-  }
+
   render() {
 
     const cardstyle = {
@@ -118,10 +116,23 @@ class Flight extends React.Component {
       <Card small className="mb-10 col-11" style={cardstyle}>
         <CardHeader className="border-bottom">
         <div className="search">
-          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"200px"}}>View Flight</label>
+          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"300px"}}>View Schedule</label>
         </div>
         </CardHeader>
-        <br/>
+
+          <Row form >
+              <Button
+                style={{marginLeft:"25px",marginTop:"25px"}}
+                theme="primary"
+                className="mb-3"
+                onClick={() => {
+                  this.submit();
+                }}
+              >
+                Add Schedule
+              </Button>
+          </Row>
+
         <Col>
           <Form>   
             <br/>
@@ -129,14 +140,15 @@ class Flight extends React.Component {
               <Table className="tlb" aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell align="left" width="100px">Plane Name </StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Model Name </StyledTableCell>
+                    <StyledTableCell align="left" width="100px">Plane</StyledTableCell>
+                    <StyledTableCell align="left" width="100px">Model</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Departure </StyledTableCell>
                     <StyledTableCell align="left" width="100px">Arrival</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Departure Time&nbsp;</StyledTableCell>
+                    <StyledTableCell align="left" width="115px">Departure Time&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Arrival Time&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Date&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Capacity&nbsp;</StyledTableCell>
+                    <StyledTableCell align="left" width="100px">Gate No&nbsp;</StyledTableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -150,6 +162,7 @@ class Flight extends React.Component {
                       <StyledTableCell align="left" >{row.arrival_time}</StyledTableCell>
                       <StyledTableCell align="left" >{row.date}</StyledTableCell>
                       <StyledTableCell align="left" >{row.capacity}</StyledTableCell>
+                      <StyledTableCell align="left" >{row.gate_no}</StyledTableCell>
                     </StyledTableRow>
                   ))}
                 </TableBody>
@@ -165,4 +178,4 @@ class Flight extends React.Component {
   }
 }
 
-export default Flight;
+export default Schedule;

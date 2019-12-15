@@ -23,6 +23,9 @@ import View from "views/View.jsx";
 import Flight from "views/Flight.jsx";
 
 import UserPage from "views/User.jsx";
+import Schedule from "views/Schedule.jsx";
+import AddSchedule from "views/AddSchedule.jsx"
+import Passenger from "views/Passenger.jsx";
 
 
 var routes = [
@@ -30,7 +33,7 @@ var routes = [
   {
     path: "/home",
     name: "Home",
-    icon: "nc-icon nc-bank",
+    icon: "fa fa-home",
     component: Home,
     layout: "/user"
   },
@@ -57,12 +60,36 @@ var admin_routes = [
   {
     path: "/flight",
     name: "Flight",
-    icon: "nc-icon nc-bank",
+    icon: "fa fa-plane",
     component: Flight,
+    layout: "/admin"
+  },
+  {
+    path: "/schedule",
+    name: "Schedule",
+    icon: "fas fa-clock",
+    component: Schedule,
+    layout: "/admin"
+  },
+  {
+    path: "/passenger",
+    name: "Passenger",
+    icon: "fas fa-users",
+    component: Passenger,
+    layout: "/admin"
+  }
+];
+
+var admin_inner_routes = [
+  {
+    path: "/addschedule",
+    name: "AddSchedule",
+    icon: "fas fa-clock",
+    component: AddSchedule,
     layout: "/admin"
   }
 ];
 
 export default routes;
-export {user_routes,admin_routes};
+export {user_routes,admin_routes,admin_inner_routes};
 

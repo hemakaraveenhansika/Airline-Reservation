@@ -61,7 +61,7 @@ class Sidebar extends React.Component {
         <div className="sidebar-wrapper" ref={this.sidebar}>
           <Nav>
           <span style={{fontSize:"50px",paddingLeft:"20px"}}>&#9992;</span>
-          <span style={{fontSize:"25px", color:"#339bb9",fontWeight:"bold"}}> Air Express</span> 
+          <span style={{fontSize:"25px", color:"#339bb9",fontWeight:"bold"}}> Air Express</span> <br/><br/>
             {this.props.routes.map((prop, key) => {
               return (
                 <li
