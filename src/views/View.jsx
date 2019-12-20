@@ -25,7 +25,7 @@ import {
   CardHeader,
   Row,
   Button,
-
+  ButtonGroup, 
   FormSelect,
   FormGroup,
   DatePicker,
@@ -33,12 +33,11 @@ import {
 } from "shards-react";
 
 import { withStyles, makeStyles } from '@material-ui/core/styles';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
+
 import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
+
 import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
@@ -47,46 +46,25 @@ const now = new Date();
 const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
-  const StyledTableCell = withStyles(theme => ({
-    head: {
-      backgroundColor: " #142f37 ",
-      color: theme.palette.common.white,
-    },
-    body: {
-      fontSize: 14,
-    },
-  }))(TableCell);
 
-  const StyledTableRow = withStyles(theme => ({
-    root: {
-      '&:nth-of-type(odd)': {
-        backgroundColor: theme.palette.background.default,
-      },
-    },
-  }))(TableRow);
-
-  function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
+  function createData(schedule,departure, arrival,  departureTime, arrivalTime) {
+    return {schedule, departure, arrival, departureTime, arrivalTime };
   }
 
   const rows = [
-    createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-    createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-    createData('Eclair', 262, 16.0, 24, 6.0),
-    createData('Cupcake', 305, 3.7, 67, 4.3),
-    createData('Gingerbread', 356, 16.0, 49, 3.9),
+    createData(1,'Colombo', 'DC', "6.00", "24.00"),
+    createData(2,'Chennai', 'London', "9.40", "7.50"),
+    createData(3,'DC', 'Colombo', "16.20", "14.25"),
+    createData(4,'London', 'DC', "3.45","1.30"),
+    createData(5,'Mattala', 'Colombo', "16.10", "4.10"),
   ];
 
 
 class View extends React.Component {
   state = {
-    departure: null,
-    arrival: null,
+    schedule: null,
     classType: null,
-    passengers: null,
-    departureDate: null,
-    arrivalDate: null,
-
+    buttoncondition:true,
   };
   constructor(props) {
     super(props);
@@ -94,9 +72,17 @@ class View extends React.Component {
   }
   submit() {
     this.validate();
+    console.log(this.state.schedule,this.state.classType);
+    // this.props.history.push('/user/detail?');
   }
   validate() {
     
+  }
+
+  handleClick(){
+    this.setState({
+      buttoncondition:!this.state.button
+    })
   }
   render() {
 
@@ -105,15 +91,11 @@ class View extends React.Component {
     };
 
     const {
-      arrival,
-      departureDate,
-      arrivalDate,
-      departure,
+      schedule,
       classType,
-      passengers
+      buttoncondition,
     } = this.state;
 
-    console.log(this.state.nic);
 
     
     return (
@@ -127,30 +109,85 @@ class View extends React.Component {
         <Col>
           <Form>   
             <br/>
-            <Paper className="paper" >
-              <Table className="tlb" aria-label="customized table">
-                <TableHead>
-                  <TableRow>
-                    <StyledTableCell align="left" width="100px">Departure </StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Arrival</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Date&nbsp;</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Departure Time&nbsp;</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Arrival Time&nbsp;</StyledTableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
+            <Row>
+              <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",marginLeft:"40px"}}>2019-12-28</label>
+            </Row>
                   {rows.map(row => (
-                    <StyledTableRow key={row.name}>
-                      <StyledTableCell align="left" > {row.name} </StyledTableCell>
-                      <StyledTableCell align="left" >{row.calories}</StyledTableCell>
-                      <StyledTableCell align="left" >{row.fat}</StyledTableCell>
-                      <StyledTableCell align="left" >{row.carbs}</StyledTableCell>
-                      <StyledTableCell align="left" >{row.protein}</StyledTableCell>
-                    </StyledTableRow>
+                    
+                  <Card key={row.schedule}>
+
+                    <Row form className="form-group pt-3">
+                      <Col md className="col-md-3">
+                        <Row>                       
+                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"600px",marginLeft:"50px"}}>{row.departure}</label>                                       
+                        </Row>
+                        <Row>
+                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",marginLeft:"50px"}}>{row.departureTime}</label>
+                        </Row>      
+                      </Col>
+
+                      <Col md className="col-md-1">
+                        <i className="fas fa-long-arrow-alt-right fa-10x" style={{fontSize:"50px"}}></i>
+                      </Col>
+
+                      <Col md className="col-md-3">
+                        <Row>
+                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"300px",marginLeft:"30px"}}>{row.arrival}</label>
+                        </Row>
+                        <Row>
+                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",marginLeft:"30px"}}>{row.arrivalTime}</label>
+                        </Row> 
+                      </Col>
+                      <Col>
+                      
+                        <Button
+                          key={"Economy"}
+                          theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Economy" ? "secondary": "info"}
+                          className="mb-3"
+                          onClick={() => {
+
+                              this.setState({schedule: row.schedule});
+                              this.setState({classType: "Economy"});
+                              this.handleClick();
+                          }}>
+                      
+                          <Row>Economy</Row><Row>LKR 12000</Row>
+                        </Button>&nbsp;&nbsp;&nbsp;
+
+                        <Button 
+                        key={"Business"}
+                        theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Business" ? "secondary": "info"}
+                        className="mb-3"
+                        onClick={() => {
+                          
+   
+                            this.setState({schedule: row.schedule});
+                            this.setState({classType: "Business"});
+                            this.handleClick();
+                           
+                        }}>
+                          <Row>Business</Row><Row>LKR 18000</Row>
+                          </Button>&nbsp;&nbsp;&nbsp;
+                        <Button 
+                        key={"Platinum"}
+                        theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Platinum" ? "secondary": "info"}
+                        className="mb-3"
+                        onClick={() => {
+
+                            this.setState({schedule: row.schedule});
+                            this.setState({classType: "Platinum"});
+                            
+                            this.handleClick();
+                        }}>
+                          <Row>Platinum</Row><Row>LKR 32000</Row>
+                        </Button>
+                      
+                      </Col>
+                    </Row>
+                  </Card>
+
                   ))}
-                </TableBody>
-              </Table>
-            </Paper>      
+       
 
             <Row form className="justify-content-end pt-3">
               <Button
@@ -160,7 +197,7 @@ class View extends React.Component {
                   this.submit();
                 }}
               >
-                Search
+                Next
               </Button>
             </Row>
           </Form>

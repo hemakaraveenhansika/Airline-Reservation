@@ -34,7 +34,7 @@ import {
   FormFeedback
 } from "shards-react";
 
-
+import axios from 'axios';
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
@@ -44,32 +44,47 @@ const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
 class Signup extends React.Component {
-  state = {   
+  state = {
+    discount: 3,   
     firstName: null,
     lastName: null,
     address: null,
     email: null,
     password: null,
-    confirmPassword: null,    
+    confirmPassword: null,
+    status:0,    
   };
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
   }
   submit() {
+    // if(this.validate()){
+    // this.props.history.push('/login');
+    // }
     if(this.validate()){
-    this.props.history.push('/login');
-    }
+      console.log(this.state.firstName);
+      axios.post("http://localhost:5000/register",{discount_ID:this.state.discount,first_name:this.state.firstName,last_name:this.state.lastName,address:this.state.address,email:this.state.email,password:this.state.password}).then((response)=>
+      {
+        console.log('RESPONSE',response.data.success);
+        console.log(this.state.email);
+      console.log(this.state.password);
+
+      })
+      
+      //  this.props.history.push('/user/home');
+      }
   }
   validate() {
-    if (this.validator.allValid()) {
-      if (moment(this.state.date) > moment(time)) {
-        return true;
-      }
-    } else {
-      this.validator.showMessages();
-      this.forceUpdate();
-    }
+    // if (this.validator.allValid()) {
+    //   if (moment(this.state.date) > moment(time)) {
+    //     return true;
+    //   }
+    // } else {
+    //   this.validator.showMessages();
+    //   this.forceUpdate();
+    // }
+    return true
   }
   
 
@@ -96,8 +111,8 @@ class Signup extends React.Component {
       email,
       password,
       confirmPassword,
-
     } = this.state;
+
     const validFirstName = this.validator.message(
       "firstName",
       firstName,
@@ -129,7 +144,7 @@ class Signup extends React.Component {
       "required"
     );
     const checkConfirmPassword = password === confirmPassword;
-    console.log(this.state.nic);
+
 
     
     return (

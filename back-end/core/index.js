@@ -10,8 +10,8 @@ async function registerUser(req) {
         bcrypt.genSalt(10, function (err, salt) {
             bcrypt.hash(req.body.password, salt, function (err, hash) {
                 const hashedPwd = hash;
-                console.log(hashedPwd);
-                let sql = `INSERT INTO user (discount_ID,first_name,last_name,address,email,password,status) VALUES ('${req.body.discount_ID}','${req.body.first_name}','${req.body.last_name}','${req.body.address}','${req.body.email}','${hashedPwd}','${req.body.status}')`;
+                console.log(hash);
+                let sql = `INSERT INTO user (discount_ID,first_name,last_name,address,email,password) VALUES ('${req.body.discount_ID}','${req.body.first_name}','${req.body.last_name}','${req.body.address}','${req.body.email}','${hashedPwd}')`;
                 let query = db.query(sql, (err, result) => {
                     console.log('result');
                     if (err) {
@@ -52,7 +52,10 @@ async function loginUser(req) {
                 reject(json_response);
             }
             else {
-                const hashedPwd = `SELECT password FROM user WHERE email='${req.body.email}'`;
+                // const hashedPwd = `SELECT password FROM user WHERE email='${req.body.email}'`;
+                const hashedPwd=result.password;
+                console.log('hashedPwd',hashedPwd);
+
                 bcrypt.compare(req.body.password, hashedPwd, (err, res) => {
                     if (err) {
                         console.log('an error occured');

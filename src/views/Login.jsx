@@ -38,6 +38,7 @@ import {
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
+import axios from 'axios';
 
 const now = new Date();
 const time = new Date();
@@ -55,19 +56,30 @@ class Login extends React.Component {
   }
   submit() {
     if(this.validate()){
-      this.props.history.push('/user/home');
+      axios.post("http://localhost:5000/login",{email:this.state.email,password:this.state.password}).then((response)=>
+      {
+        console.log('RESPONSE',response.data.success);
+        console.log(this.state.email);
+      console.log(this.state.password);
+      })
+      
+      //  this.props.history.push('/user/home');
       }
   }
+
+
+
   
   validate() {
-    if (this.validator.allValid()) {
-      if (moment(this.state.date) > moment(time)) {
-        return true;
-      }
-    } else {
-      this.validator.showMessages();
-      this.forceUpdate();
-    }
+    // if (this.validator.allValid()) {
+    //   if (moment(this.state.date) > moment(time)) {
+    //     return true;
+    //   }
+    // } else {
+    //   this.validator.showMessages();
+    //   this.forceUpdate();
+    // }
+    return true
   }
 
   render() {
@@ -101,8 +113,6 @@ class Login extends React.Component {
       "required|alpha"
     );
 
-
-    console.log(this.state.nic);
 
     
     return (

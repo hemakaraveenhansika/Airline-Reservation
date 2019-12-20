@@ -49,13 +49,11 @@ time.setFullYear(now.getFullYear() - 18);
 
 class Home extends React.Component {
   state = {
-    departure: null,
-    arrival: null,
-    classType: null,
-    passengers: null,
-    departureDate: null,
-    arrivalDate: null,
-
+    departure: '',
+    arrival: '',
+    classType: '',
+    passengers: '',
+    departureDate: '',
   };
   constructor(props) {
     super(props);
@@ -67,14 +65,15 @@ class Home extends React.Component {
       }
   }
   validate() {
-    if (this.validator.allValid()) {
-      if (moment(this.state.departureDate) > moment(time) && moment(this.state.arrivalDate) > moment(time)) {
-        return true;
-      }
-    } else {
-      this.validator.showMessages();
-      this.forceUpdate();
-    }
+    // if (this.validator.allValid()) {
+    //   if (moment(this.state.departureDate) > moment(time)) {
+    //     return true;
+    //   }
+    // } else {
+    //   this.validator.showMessages();
+    //   this.forceUpdate();
+    // }
+    return true
   }
   render() {
     const mystyle = {
@@ -92,7 +91,6 @@ class Home extends React.Component {
     const {
       arrival,
       departureDate,
-      arrivalDate,
       departure,
       classType,
       passengers
@@ -118,7 +116,7 @@ class Home extends React.Component {
       passengers,
        "required"
     );
-    console.log(this.state.nic);
+
 
     
     return (
@@ -210,19 +208,6 @@ class Home extends React.Component {
                   />
                 </Col>
 
-                <Col>
-                <DatePicker
-                  placeholderText="Arrival Date"
-                  selected={arrivalDate}
-                  style={inputstyle}
-                  className=""
-                  onChange={e => {
-                    this.setState({
-                      arrivalDate: new Date(e)
-                    });
-                  }}
-                />
-              </Col>
             </Row>
 
             <Row form className="justify-content-end pt-3">

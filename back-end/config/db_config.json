@@ -2,5 +2,5 @@
     "host":"localhost",
     "user":"root",
     "password":"",
-    "database":"airline_reservation2"
+    "database":"airline_reservation"
 }

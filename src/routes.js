@@ -21,12 +21,13 @@
 import Home from "views/Home.jsx";
 import View from "views/View.jsx";
 import Flight from "views/Flight.jsx";
+import Detail from "views/Detail.jsx";
 
 import UserPage from "views/User.jsx";
 import Schedule from "views/Schedule.jsx";
 import AddSchedule from "views/AddSchedule.jsx"
 import Passenger from "views/Passenger.jsx";
-
+import Report from "views/Report.jsx";
 
 var routes = [
 
@@ -53,6 +54,13 @@ var user_routes = [
     icon: "nc-icon nc-bank",
     component: View,
     layout: "/user"
+  },
+  {
+    path: "/detail",
+    name: "Detail",
+    icon: "nc-icon nc-bank",
+    component: Detail,
+    layout: "/user"
   }
 ];
 
@@ -76,6 +84,13 @@ var admin_routes = [
     name: "Passenger",
     icon: "fas fa-users",
     component: Passenger,
+    layout: "/admin"
+  },
+  {
+    path: "/report",
+    name: "Report",
+    icon: "fas fa-poll",
+    component: Report,
     layout: "/admin"
   }
 ];
