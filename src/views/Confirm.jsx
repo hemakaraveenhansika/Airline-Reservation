@@ -53,11 +53,17 @@ time.setFullYear(now.getFullYear() - 18);
   ];
 
 
-class View extends React.Component {
+class Confrim extends React.Component {
   state = {
     schedule: null,
-    classType: null,
-    buttoncondition:true,
+    departure: 'Colombo',
+    arrival: 'DC',
+    classType: 'Business',
+    passengers: '2',
+    departureDate: '2019-12-28',
+    departureTime:'12.22',
+    arrivalTime:'18.35'
+
   };
   constructor(props) {
     super(props);
@@ -118,26 +124,25 @@ class View extends React.Component {
       <Card small className="mb-10 col-11" style={{marginTop:"100px"}}>
         <CardHeader className="border-bottom">
         <div className="search">
-          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"200px"}}>View Flight</label>
+          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"400px"}}>Review Your Flight</label>
         </div>
         </CardHeader>
         <Col>
           <Form>   
             <br/>
             <Row>
-              <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",marginLeft:"40px"}}>2019-12-28</label>
+              <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",marginLeft:"40px"}}>{this.state.departureDate}</label>
             </Row>
-                  {rows.map(row => (
-                    
-                  <Card key={row.schedule} style={cardstyle}>
+ 
+                  <Card style={cardstyle}>
 
                     <Row form className="form-group pt-3">
                       <Col md className="col-md-3">
                         <Row>                       
-                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"600px",marginLeft:"50px"}}>{row.departure}</label>                                       
+                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"600px",marginLeft:"50px"}}>{this.state.departure}</label>                                       
                         </Row>
                         <Row>
-                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"50px"}}>{row.departureTime}</label>
+                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"50px"}}>{this.state.departureTime}</label>
                         </Row>      
                       </Col>
 
@@ -147,69 +152,17 @@ class View extends React.Component {
 
                       <Col md className="col-md-3">
                         <Row>
-                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"300px",marginLeft:"30px"}}>{row.arrival}</label>
+                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"300px",marginLeft:"30px"}}>{this.state.arrival}</label>
                         </Row>
                         <Row>
-                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"30px"}}>{row.arrivalTime}</label>
+                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"30px"}}>{this.state.arrivalTime}</label>
                         </Row> 
                       </Col>
-                      <Col>
-                      
-                        <Button
-                          key={"Economy"}
-                          theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Economy" ? "secondary": "info"}
-                          className="mb-3"
-                          onClick={() => {
 
-                              this.setState({schedule: row.schedule});
-                              this.setState({classType: "Economy"});
-                              this.handleClick();
-                          }}
-                          invalid={validSchedule}  
-                        >
-                      
-                          <Row>Economy</Row><Row>LKR 12000</Row>
-                        </Button>&nbsp;&nbsp;&nbsp;
-
-                        <Button 
-                        key={"Business"}
-                        theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Business" ? "secondary": "info"}
-                        className="mb-3"
-                        onClick={() => {
-                          
-   
-                            this.setState({schedule: row.schedule});
-                            this.setState({classType: "Business"});
-                            this.handleClick();
-                           
-                        }}
-                        invalid={validSchedule}
-                        >
-                          <Row>Business</Row><Row>LKR 18000</Row>
-                          </Button>&nbsp;&nbsp;&nbsp;
-                        <Button 
-                        key={"Platinum"}
-                        theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Platinum" ? "secondary": "info"}
-                        className="mb-3"
-                        onClick={() => {
-
-                            this.setState({schedule: row.schedule});
-                            this.setState({classType: "Platinum"});
-                            
-                            this.handleClick();
-                        }}
-                        invalid={validSchedule}
-                        >
-
-                          <Row>Platinum</Row><Row>LKR 32000</Row>
-                        </Button>
-                      
-                      </Col>
                     </Row>
                   </Card>
 
-                  ))}
-       
+          
 
             <Row form className="justify-content-end pt-3">
               <Button
@@ -219,7 +172,7 @@ class View extends React.Component {
                   this.submit();
                 }}
               >
-                Next
+                Confirm
               </Button>
             </Row>
           </Form>
@@ -229,4 +182,4 @@ class View extends React.Component {
   }
 }
 
-export default View;
+export default Confrim;

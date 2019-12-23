@@ -42,41 +42,86 @@ import {
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
+import update from 'immutability-helper';
 
 const now = new Date();
 const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
+const passengerNo=2;
+
+
 const rows = [];
-for (let i = 1; i <= 3; i++) {
+for (let i = 1; i <= passengerNo; i++) {
   rows.push(i);
 }
 
 class Detail extends React.Component {
   state = {
-    passportno: [],
-    age: [],
-    seatNo:[],
+      passportNo:'',
+      age:'',
+      seatNo:'',
+      detail:[],
+      passengerNo:passengerNo 
   };
+  
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
+    this.updateDetail = this.updateDetail.bind(this);
+
   }
+
   submit() {
     if(this.validate()){
-      
-      }
-  }
-  validate() {
-    if (this.validator.allValid()) {
-      if (moment(this.state.date) > moment(time)) {
-        return true;
-      }
-    } else {
-      this.validator.showMessages();
-      this.forceUpdate();
+      console.log(this.state.detail);
+      this.props.history.push('/user/confirm');
     }
   }
+
+  validate() {
+    // if (this.validator.allValid()) {
+
+    //     return true;
+      
+    // } else {
+    //   this.validator.showMessages();
+    //   this.forceUpdate();
+    // }
+    return true
+  }
+
+  buildSeatNoOptions() {
+    var arr = [];
+    var flight_data=["f01","f02","f03","f04"];
+
+    for (const [index, value] of flight_data.entries()) {
+      arr.push(<option key={index} value={value} >{value}</option>)
+    }
+
+    return arr; 
+  }
+
+  updateDetail(event,index,passengerNo){
+    if(this.state.detail.length<passengerNo){
+      for (let i = 1; i <= passengerNo; i++) {
+        const newArray = update(this.state.detail, {$push: [{passportNo:'',age:'',seatNo:''}]});
+        this.state={detail:newArray}
+      }
+    }
+
+    let ndetail = update(this.state, {
+      detail: {    
+          [index.row-1]: {
+              [event.target.name] :{ $set:event.target.value }
+          }       
+      }
+    });
+    this.setState(ndetail);
+    
+  }
+    
+
   render() {
     const mystyle = {
       width: "220px",
@@ -86,26 +131,16 @@ class Detail extends React.Component {
       marginTop:"100px",
     };
 
-    const inputstyle = {
-      width:"400px",
-    };
-
     const {
       age,
-      passportno,
+      passportNo,
       seatNo,
     } = this.state;
-    const validPassport = this.validator.message(
-      "passportno",
-      passportno,
-      "required|alpha"
-    );
-    const validAge = this.validator.message(
-      "age",
-      age,
-      "required|alpha"
-    );
 
+
+   
+
+    
     
     return (
       
@@ -125,31 +160,49 @@ class Detail extends React.Component {
                 </div>
               </CardHeader>
               <Row form className="form-group pt-3">
-                <Col md className="pr-0">
+                <Col md className="col-md-3">
                   <FormInput
-                    style={inputstyle}
+                    style={{marginLeft:"30px"}}
                     id="passportId"
                     placeholder="Passport No"
+                    name="passportNo"
                     onChange={e => {
-                      this.setState({ passportno: e.target.value });
+                      this.updateDetail(e,{row},this.state.passengerNo);                   
                     }}
-                    invalid={validPassport}
+
+
                   />
                 </Col>
 
-                <Col md className="pr-0">
+                <Col md className="col-md-3">
                   <FormInput
-                    style={inputstyle}
-                    id="arrivalId"
+                    style={{marginLeft:"100px"}}
+                    id="ageId"
                     placeholder="Age"
+                    name="age"
                     onChange={e => {
-                      this.setState({ age: e.target.value });
+                      this.updateDetail(e,{row},this.state.passengerNo);             
                     }}
-                    invalid={validAge}
+
+  
                   />
                 </Col>
-              </Row>
-            </Card>
+
+                <Col md className="col-md-3">
+                  <FormSelect
+                    onChange={e => {
+                      this.updateDetail(e,{row},this.state.passengerNo);                 
+                    }}
+                    style={{marginLeft:"170px"}}
+                    name="seatNo"
+                  >
+                    <option   value="DEFAULT" defaultValue={'DEFAULT'} >Seat</option>
+                      {this.buildSeatNoOptions()}
+                                         
+                    </FormSelect>
+                  </Col>
+                </Row>
+              </Card>
             ))}
             <Row form className="justify-content-end pt-3">
               <Button

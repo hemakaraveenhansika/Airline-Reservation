@@ -22,6 +22,7 @@ import Home from "views/Home.jsx";
 import View from "views/View.jsx";
 import Flight from "views/Flight.jsx";
 import Detail from "views/Detail.jsx";
+import Confirm from "views/Confirm.jsx";
 
 import UserPage from "views/User.jsx";
 import Schedule from "views/Schedule.jsx";
@@ -61,7 +62,14 @@ var user_routes = [
     icon: "nc-icon nc-bank",
     component: Detail,
     layout: "/user"
-  }
+  },
+  {
+      path: "/confirm",
+      name: "Confirm",
+      icon: "nc-icon nc-bank",
+      component: Confirm,
+      layout: "/user"
+    }  
 ];
 
 var admin_routes = [

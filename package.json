@@ -13,6 +13,7 @@
     "chart.js": "2.8.0",
     "freegeoip-country-list": "^1.2.1",
     "history": "4.9.0",
+    "immutability-helper": "^3.0.1",
     "json-loader": "^0.5.7",
     "mdbreact": "^4.23.1",
     "node-sass": "4.12.0",

@@ -76,15 +76,14 @@ class Signup extends React.Component {
       }
   }
   validate() {
-    // if (this.validator.allValid()) {
-    //   if (moment(this.state.date) > moment(time)) {
-    //     return true;
-    //   }
-    // } else {
-    //   this.validator.showMessages();
-    //   this.forceUpdate();
-    // }
-    return true
+    if (this.validator.allValid()) {
+      if (moment(this.state.date) > moment(time)) {
+        return true;
+      }
+    } else {
+      this.validator.showMessages();
+      this.forceUpdate();
+    }
   }
   
 
@@ -97,7 +96,7 @@ class Signup extends React.Component {
       marginTop:"120px",
       marginLeft:"500px",
       marginRight:"500px",
-      color:""
+      backgroundColor:" #dedede "
     };
 
     const inputstyle = {
@@ -149,7 +148,7 @@ class Signup extends React.Component {
     
     return (
 
-      <Card small className="mb-5 col-4 bg-light  " style={cardstyle}>
+      <Card style={cardstyle}>
         <CardHeader className="border-bottom">
         <div className="signup-panel">
           <span style={{fontSize:"50px",paddingLeft:"20px",marginLeft:"80px"}}>&#9992;</span>

@@ -91,6 +91,7 @@ class Login extends React.Component {
       marginTop:"120px",
       marginLeft:"500px",
       marginRight:"500px",
+      backgroundColor:" #dedede "
     };
 
     const inputstyle = {
@@ -117,7 +118,7 @@ class Login extends React.Component {
     
     return (
 
-      <Card small className="mb-5 col-4 bg-light" style={cardstyle}>
+      <Card small  style={cardstyle}>
         <CardHeader className="border-bottom">
         <div className="login-panel">
           <span style={{fontSize:"50px",paddingLeft:"20px",marginLeft:"80px"}}>&#9992;</span>
