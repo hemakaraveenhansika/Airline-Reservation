@@ -48,18 +48,29 @@ time.setFullYear(now.getFullYear() - 18);
 class AddSchedule extends React.Component {
 
   state = {
-    departure: null,
+    scheduleId:this.props.location.state.scheduleId,
     planeId: null,
     flightId: null,
     departureDate: null,
-    arrivalDate: null,
     gateNo:null,
-    departureTime: '10:00',
+    departureTime:'2:00',
     arrivalTime:'10:00'
   };
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
+    if(this.state.scheduleId!=0){
+      this.state = {
+        planeId: this.props.location.state.planeId,
+        flightId: this.props.location.state.flightId,
+        // departureDate:this.props.location.state.departureDate,
+        gateNo:this.props.location.state.gateNo,
+        departureTime:this.props.location.state.departureTime,
+        arrivalTime:this.props.location.state.arrivalTime
+      }
+      console.log(this.state.planeId);
+    }
+   
     
   }
 
@@ -68,7 +79,11 @@ class AddSchedule extends React.Component {
     var plane_data=["p01","p02","p03","p04"]
 
     for (const [index, value] of plane_data.entries()) {
-      arr.push(<option key={index} value={value} >{value}</option>)
+      if(this.state.scheduleId!=0 && value==this.state.planeId){
+        arr.push(<option key={index} selected value={value} >{value}</option>)
+      }else{
+        arr.push(<option key={index} value={value} >{value}</option>)
+      }
     }
 
     return arr; 
@@ -79,7 +94,11 @@ class AddSchedule extends React.Component {
     var flight_data=["f01","f02","f03","f04"]
 
     for (const [index, value] of flight_data.entries()) {
-      arr.push(<option key={index} value={value} >{value}</option>)
+      if(this.state.scheduleId!=0 && value==this.state.flightId){
+        arr.push(<option key={index} selected defaultValue="0" value={value} >{value}</option>)
+      }else{
+        arr.push(<option key={index} value={value} >{value}</option>)
+      }
     }
 
     return arr; 
@@ -89,7 +108,11 @@ class AddSchedule extends React.Component {
     var arr = [];
 
     for (let i = 1; i <= 10; i++) {
+      if(this.state.scheduleId!=0 && i==this.state.gateNo){
+        arr.push(<option  key={i} selected defaultValue="0" value={i} >{i}</option>)
+      }else{
         arr.push(<option key={i} value={i}>{i}</option>)
+      }
     }
 
     return arr; 
@@ -125,6 +148,7 @@ class AddSchedule extends React.Component {
   onChangedepartureTime = departureTime => this.setState({ departureTime })
   onChangearrivalTime = arrivalTime => this.setState({ arrivalTime })
   render() {
+
     const mystyle = {
       width: "220px",
     };
@@ -146,9 +170,6 @@ class AddSchedule extends React.Component {
       gateNo,
     } = this.state;
 
-
-
-
     const validGateNo = this.validator.message(
       "gateNo",
       gateNo,
@@ -165,9 +186,7 @@ class AddSchedule extends React.Component {
       flightId,
        "required"
     );
-    console.log(this.state.nic);
-
-
+    
     return (
 
       <Card small className="mb-10 col-11" style={cardstyle}>
@@ -189,10 +208,11 @@ class AddSchedule extends React.Component {
                     }}
                     invalid={validPlaneId}
                     style={inputstyle}
-                    
+
+
                   >
-                    <option selected disabled value="" >Plane</option>
-                      {this.buildPlaneOptions()}
+                    <option  disabled value="" >Plane</option>
+                    {this.buildPlaneOptions()}
                       
                     
                   </FormSelect>
@@ -209,7 +229,7 @@ class AddSchedule extends React.Component {
                   invalid={validFlightId}
                   style={inputstyle}
                 >
-                  <option selected disabled value="" >Flight</option>
+                  <option  disabled value="" >Flight</option>
                   {this.buildFlightOptions()}
                 </FormSelect>
               </Col>
@@ -239,7 +259,7 @@ class AddSchedule extends React.Component {
                     invalid={validGateNo}
                     style={inputstyle}
                   >
-                    <option selected disabled value="" >Gate No</option>
+                    <option  disabled value="" >Gate No</option>
                     {this.buildOptions()}
                   </FormSelect>
 

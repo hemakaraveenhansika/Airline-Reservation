@@ -65,13 +65,13 @@ time.setFullYear(now.getFullYear() - 18);
     },
   }))(TableRow);
 
-  function createData(plane_Name, model_Name, departure, arrival, departure_time, arrival_time,date,capacity,gate_no) {
-    return { plane_Name, model_Name, departure, arrival, departure_time, arrival_time, date, capacity ,gate_no };
+  function createData(scheduleId,plane_Name, model_Name, departure, arrival, departure_time, arrival_time,date,capacity,gate_no) {
+    return { scheduleId,plane_Name, model_Name, departure, arrival, departure_time, arrival_time, date, capacity ,gate_no };
   }
 
   const rows = [
-    createData('p01', 'm01', 'colombo', 'w dc', "12.00","17.50","2019-12-28",125,5),
-    
+    createData('s04','p02', 'm04', 'colombo', 'w dc', '12:00','17:50',"2019-12-28",125,5),
+    createData('s01','p03', 'm01', 'Mattala', 'w dc', '2:00','18:50',"2019-12-28",125,2),
   ];
 
 
@@ -90,7 +90,31 @@ class Schedule extends React.Component {
     this.validator = new SimpleReactValidator();
   }
   submit() {
-    this.props.history.push('/admin/addschedule');
+    this.props.history.push({
+      pathname: '/admin/addschedule',
+      state: { 
+        scheduleId:0}
+    });
+  }
+
+  edit(id,plane_Name,flightId,date,gate_no,departure_time,arrival_time) {
+    this.props.history.push({
+      pathname: '/admin/addschedule',
+      state: { 
+        scheduleId: id,
+        planeId:plane_Name,
+        flightId:flightId,
+        departureDate:date,
+        gateNo:gate_no,
+        departureTime:departure_time,
+        arrivalTime:arrival_time}
+    });
+    console.log(id);
+  }
+
+  delete(id) {
+    // this.props.history.push('/admin/addschedule');
+    console.log(id);
   }
 
   render() {
@@ -149,11 +173,13 @@ class Schedule extends React.Component {
                     <StyledTableCell align="left" width="100px">Date&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Capacity&nbsp;</StyledTableCell>
                     <StyledTableCell align="left" width="100px">Gate No&nbsp;</StyledTableCell>
+                    <StyledTableCell align="left" width="220px"></StyledTableCell>
+
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rows.map(row => (
-                    <StyledTableRow key={row.name}>
+                    <StyledTableRow key={row.scheduleId}>
                       <StyledTableCell align="left" > {row.plane_Name} </StyledTableCell>
                       <StyledTableCell align="left" >{row.model_Name}</StyledTableCell>
                       <StyledTableCell align="left" >{row.departure}</StyledTableCell>
@@ -163,6 +189,30 @@ class Schedule extends React.Component {
                       <StyledTableCell align="left" >{row.date}</StyledTableCell>
                       <StyledTableCell align="left" >{row.capacity}</StyledTableCell>
                       <StyledTableCell align="left" >{row.gate_no}</StyledTableCell>
+                      <StyledTableCell align="left" >
+                        <Button
+                          style={{width:"80px"}}
+                          className="btn btn-warning btn-sm"
+                          onClick={() => {
+                            this.edit(row.scheduleId,row.plane_Name,"f04",row.date,row.gate_no,row.departure_time,row.arrival_time);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          style={{marginLeft:"5px"}}
+                          className="btn btn-danger btn-sm"
+                          onClick={() => {
+                            if(window.confirm('Delete the item?')){
+                              this.delete(row.scheduleId);
+                            };
+                            
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </StyledTableCell>
+                      
                     </StyledTableRow>
                   ))}
                 </TableBody>

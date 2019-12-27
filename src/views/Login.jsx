@@ -48,6 +48,7 @@ class Login extends React.Component {
   state = {
     email: null,
     password: null,
+    userId:''
 
   };
   constructor(props) {
@@ -63,7 +64,10 @@ class Login extends React.Component {
       console.log(this.state.password);
       })
       
-      //  this.props.history.push('/user/home');
+      this.props.history.push({
+        pathname: '/user/home',
+        state: { userId: 12 }
+      });
       }
   }
 
@@ -96,6 +100,7 @@ class Login extends React.Component {
 
     const inputstyle = {
       width:"400px",
+      marginLeft:"50px",
     };
 
     const {
@@ -115,15 +120,15 @@ class Login extends React.Component {
     );
 
 
-    
     return (
+  
 
       <Card small  style={cardstyle}>
         <CardHeader className="border-bottom">
         <div className="login-panel">
           <span style={{fontSize:"50px",paddingLeft:"20px",marginLeft:"80px"}}>&#9992;</span>
           <span style={{fontSize:"35px", color:"#339bb9",fontWeight:"bold"}}> Air Express</span> <br/><br/>
-          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"200px"}}>Log-in</label><br/><br/>
+          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",marginLeft:"50px",}}>Log-in</label><br/><br/>
         </div>
         </CardHeader>
         <Col>

@@ -48,21 +48,18 @@ const now = new Date();
 const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
-const passengerNo=2;
+const passengers=2;
 
 
-const rows = [];
-for (let i = 1; i <= passengerNo; i++) {
-  rows.push(i);
-}
+
 
 class Detail extends React.Component {
   state = {
-      passportNo:'',
+      passengers:'',
       age:'',
       seatNo:'',
       detail:[],
-      passengerNo:passengerNo 
+      passengers:passengers 
   };
   
   constructor(props) {
@@ -75,7 +72,17 @@ class Detail extends React.Component {
   submit() {
     if(this.validate()){
       console.log(this.state.detail);
-      this.props.history.push('/user/confirm');
+      this.props.history.push({
+        pathname: '/user/confirm',
+        state: { 
+          userId: this.props.location.state.userId,
+          departure:this.props.location.state.departure,
+          arrival:this.props.location.state.arrival,
+          classType:this.props.location.state.classType,
+          passengers:this.props.location.state.passengers,
+          departureDate:this.props.location.state.departureDate}
+      });
+
     }
   }
 
@@ -102,9 +109,9 @@ class Detail extends React.Component {
     return arr; 
   }
 
-  updateDetail(event,index,passengerNo){
-    if(this.state.detail.length<passengerNo){
-      for (let i = 1; i <= passengerNo; i++) {
+  updateDetail(event,index,passengers){
+    if(this.state.detail.length<passengers){
+      for (let i = 1; i <= passengers; i++) {
         const newArray = update(this.state.detail, {$push: [{passportNo:'',age:'',seatNo:''}]});
         this.state={detail:newArray}
       }
@@ -123,6 +130,12 @@ class Detail extends React.Component {
     
 
   render() {
+
+    const rows = [];
+    for (let i = 1; i <= this.props.location.state.passengers; i++) {
+      rows.push(i);
+    }
+
     const mystyle = {
       width: "220px",
     };
@@ -167,7 +180,7 @@ class Detail extends React.Component {
                     placeholder="Passport No"
                     name="passportNo"
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengerNo);                   
+                      this.updateDetail(e,{row},this.state.passengers);                   
                     }}
 
 
@@ -181,7 +194,7 @@ class Detail extends React.Component {
                     placeholder="Age"
                     name="age"
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengerNo);             
+                      this.updateDetail(e,{row},this.state.passengers);             
                     }}
 
   
@@ -191,7 +204,7 @@ class Detail extends React.Component {
                 <Col md className="col-md-3">
                   <FormSelect
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengerNo);                 
+                      this.updateDetail(e,{row},this.state.passengers);                 
                     }}
                     style={{marginLeft:"170px"}}
                     name="seatNo"

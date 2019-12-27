@@ -55,27 +55,41 @@ class Home extends React.Component {
     passengers: '',
     departureDate: '',
   };
+
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
   }
+
   submit() {
     if(this.validate()){
-      this.props.history.push('/user/view?'+this.state.passengers);
+      
+      this.props.history.push({
+        pathname: '/user/view',
+        state: { 
+          userId: this.props.location.state.userId,
+          departure:this.state.departure,
+          arrival:this.state.arrival,
+          classType:this.state.classType,
+          passengers:this.state.passengers,
+          departureDate:this.state.departureDate}
+      });
+
       }
   }
   validate() {
-    // if (this.validator.allValid()) {
-    //   if (moment(this.state.departureDate) > moment(time)) {
-    //     return true;
-    //   }
-    // } else {
-    //   this.validator.showMessages();
-    //   this.forceUpdate();
-    // }
-    return true
+    if (this.validator.allValid()) {
+      if (moment(this.state.departureDate) > moment(time)) {
+        return true;
+      }
+    } else {
+      this.validator.showMessages();
+      this.forceUpdate();
+    }
+  
   }
   render() {
+
     const mystyle = {
       width: "220px",
     };
@@ -117,7 +131,7 @@ class Home extends React.Component {
        "required"
     );
 
-
+    
     
     return (
 
@@ -166,8 +180,9 @@ class Home extends React.Component {
                     }}
                     invalid={validClassType}
                     style={inputstyle}
+
                   >
-                    <option selected disabled value="" >Class</option>
+                    <option value="" >Class</option>
                     <option value="Economy">Economy Class</option>
                     <option value="Business ">Business Class</option>
                     <option value="Platinum ">Platinum Class</option>
@@ -183,12 +198,15 @@ class Home extends React.Component {
                   }}
                   invalid={validPassenger}
                   style={inputstyle}
+                  placeholder="aaa"
                 >
-                  <option selected disabled value="">
-                    Passengers
-                  </option>
+                  <option value=""> Passenger </option>
                   <option value="1">1</option>
                   <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+
                 </FormSelect>
               </Col>
             </Row>
@@ -199,10 +217,12 @@ class Home extends React.Component {
                     placeholderText="Departure Date"
                     selected={departureDate}
                     style={inputstyle}
+                    dateFormat="yyyy/MM/dd"
                     className=""
                     onChange={e => {
                       this.setState({
-                        departureDate: new Date(e)
+                        departureDate: new Date(e),
+
                       });
                     }}
                   />

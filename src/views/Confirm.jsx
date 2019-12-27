@@ -40,19 +40,6 @@ const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
 
-  function createData(schedule,departure, arrival,  departureTime, arrivalTime) {
-    return {schedule, departure, arrival, departureTime, arrivalTime };
-  }
-
-  const rows = [
-    createData(1,'Colombo', 'DC', "6.00", "24.00"),
-    createData(2,'Chennai', 'London', "9.40", "7.50"),
-    createData(3,'DC', 'Colombo', "16.20", "14.25"),
-    createData(4,'London', 'DC', "3.45","1.30"),
-    createData(5,'Mattala', 'Colombo', "16.10", "4.10"),
-  ];
-
-
 class Confrim extends React.Component {
   state = {
     schedule: null,
@@ -62,7 +49,8 @@ class Confrim extends React.Component {
     passengers: '2',
     departureDate: '2019-12-28',
     departureTime:'12.22',
-    arrivalTime:'18.35'
+    arrivalTime:'18.35',
+    planeId:'P788e-B7',
 
   };
   constructor(props) {
@@ -71,8 +59,9 @@ class Confrim extends React.Component {
   }
   submit() {
     if(this.validate()){
-      console.log(this.state.schedule,this.state.classType);
-      this.props.history.push('/user/detail');
+      this.props.history.push({
+        pathname: '/user/home',
+      });
     }else{
       
     }
@@ -94,6 +83,11 @@ class Confrim extends React.Component {
     })
   }
   render() {
+
+    const rows = [];
+    for (let i = 1; i <= this.props.location.state.passengers; i++) {
+      rows.push(i);
+    }
 
     const cardstyle = {
  
@@ -122,47 +116,78 @@ class Confrim extends React.Component {
     return (
 
       <Card small className="mb-10 col-11" style={{marginTop:"100px"}}>
-        <CardHeader className="border-bottom">
-        <div className="search">
-          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"400px"}}>Review Your Flight</label>
-        </div>
+        <CardHeader className="border-bottom" >               
+            <label style={{fontSize:"30px",fontWeight:"bold",color:"#339bb9",width:"400px"}}>Review Your Flight</label>                 
         </CardHeader>
+        <br/>
         <Col>
-          <Form>   
-            <br/>
-            <Row>
-              <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",marginLeft:"40px"}}>{this.state.departureDate}</label>
-            </Row>
+            <Form>
+                  {rows.map(row => (             
  
-                  <Card style={cardstyle}>
+                  <Card key={row} style={cardstyle}>
+                    <br/>
+                    <Col style={{backgroundColor:"#339bb9"}}>
+                      <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",color:"#fcfbfb  "}}>Passenger {row}</label>
+                      <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",color:"#fcfbfb  ",marginLeft:"670px"}}>{this.state.classType} Class</label>
+                    </Col>
+                  <br/>
 
-                    <Row form className="form-group pt-3">
+                    <Row>
+                      <Col md className="col-md-4">
+                        <label style={{fontSize:"20px",fontWeight:"bold",width:"300px",color:" #339bb9",marginLeft:"35px"}}>Name of Passenger</label>
+                      </Col>
                       <Col md className="col-md-3">
-                        <Row>                       
-                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"600px",marginLeft:"50px"}}>{this.state.departure}</label>                                       
-                        </Row>
-                        <Row>
-                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"50px"}}>{this.state.departureTime}</label>
-                        </Row>      
+                        <label style={{fontSize:"20px",fontWeight:"bold",width:"300px",color:" #339bb9",marginLeft:"35px"}}>Date</label>
                       </Col>
-
-                      <Col md className="col-md-1">
-                        <i className="fas fa-long-arrow-alt-right fa-10x" style={{fontSize:"50px"}}></i>
+                      <Col md className="col-md-4">
+                        <label style={{fontSize:"20px",fontWeight:"bold",width:"300px",color:" #339bb9",marginLeft:"35px"}}>Flight</label>
+                      </Col>                            
+                    </Row>
+                    <Row>
+                      <Col md className="col-md-4">
+                        <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>Alex Willson</label>
                       </Col>
-
                       <Col md className="col-md-3">
-                        <Row>
-                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"300px",marginLeft:"30px"}}>{this.state.arrival}</label>
-                        </Row>
-                        <Row>
-                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"30px"}}>{this.state.arrivalTime}</label>
-                        </Row> 
+                        <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>{this.state.departureDate}</label>
                       </Col>
-
+                      <Col md className="col-md-4">
+                        <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>{this.state.planeId}</label>
+                      </Col>                         
+                    </Row>
+                    <br/>     
+                    <Row >
+                        <Col md className="col-md-2">
+                          <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>From :</label>
+                        </Col>
+                      
+                        <Col md className="col-md-2">                      
+                          <label style={{fontSize:"18px",fontWeight:"bold",marginLeft:"-70px"}}>{this.state.departure} / {this.state.departureTime}</label>                                       
+                        </Col>
+                        <Col md className="col-md-3">
+                          <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>Seat</label>
+                        </Col>
+                        <Col md className="col-md-2">
+                          <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>Gate No</label>
+                        </Col>
+                    </Row>
+                    <Row >
+                        <Col md className="col-md-2">
+                          <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>To :</label>
+                        </Col>
+                      
+                        <Col md className="col-md-2">                      
+                          <label style={{fontSize:"18px",fontWeight:"bold",marginLeft:"-70px"}}>{this.state.arrival}/ {this.state.arrivalTime}</label>                                       
+                        </Col>
+                        <Col md className="col-md-3">
+                          <label style={{fontSize:"20px",fontWeight:"bold",marginLeft:"35px"}}>B002</label>
+                        </Col>
+                        <Col md className="col-md-2">
+                          <label style={{fontSize:"20px",fontWeight:"bold",marginLeft:"35px"}}>05</label>
+                        </Col>
                     </Row>
                   </Card>
 
-          
+                ))}
 
             <Row form className="justify-content-end pt-3">
               <Button

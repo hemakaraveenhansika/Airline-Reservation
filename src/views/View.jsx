@@ -54,19 +54,37 @@ time.setFullYear(now.getFullYear() - 18);
 
 
 class View extends React.Component {
+
   state = {
     schedule: null,
     classType: null,
     buttoncondition:true,
+    userId: this.props.location.state.userId,
+    departure:this.props.location.state.departure,
+    arrival:this.props.location.state.arrival,
+    classType:this.props.location.state.classType,
+    passengers:this.props.location.state.passengers,
+    departureDate:this.props.location.state.departureDate
   };
+
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
   }
   submit() {
     if(this.validate()){
-      console.log(this.state.schedule,this.state.classType);
-      this.props.history.push('/user/detail');
+      
+      this.props.history.push({
+        pathname: '/user/Detail',
+        state: { 
+          userId: this.props.location.state.userId,
+          departure:this.props.location.state.departure,
+          arrival:this.props.location.state.arrival,
+          classType:this.props.location.state.classType,
+          passengers:this.props.location.state.passengers,
+          departureDate:this.props.location.state.departureDate}
+      });
+
     }else{
       
     }
@@ -90,8 +108,7 @@ class View extends React.Component {
   render() {
 
     const cardstyle = {
- 
-      backgroundColor:" #e9eaea "
+      backgroundColor:"#e9eaea"
     };
 
     const {
@@ -110,8 +127,6 @@ class View extends React.Component {
       classType,
       "required"
     );
-
-
     
     return (
 
@@ -125,88 +140,88 @@ class View extends React.Component {
           <Form>   
             <br/>
             <Row>
-              <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",marginLeft:"40px"}}>2019-12-28</label>
+              <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",marginLeft:"40px"}}>{(this.state.departureDate).toLocaleDateString()}</label>
             </Row>
                   {rows.map(row => (
                     
-                  <Card key={row.schedule} style={cardstyle}>
+                    <Card key={row.schedule} style={cardstyle}>
 
-                    <Row form className="form-group pt-3">
-                      <Col md className="col-md-3">
-                        <Row>                       
-                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"600px",marginLeft:"50px"}}>{row.departure}</label>                                       
-                        </Row>
-                        <Row>
-                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"50px"}}>{row.departureTime}</label>
-                        </Row>      
-                      </Col>
+                      <Row form className="form-group pt-3">
+                        <Col md className="col-md-3">
+                          <Row>                       
+                            <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"600px",marginLeft:"50px"}}>{row.departure}</label>                                       
+                          </Row>
+                          <Row>
+                            <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"50px"}}>{row.departureTime}</label>
+                          </Row>      
+                        </Col>
 
-                      <Col md className="col-md-1">
-                        <i className="fas fa-long-arrow-alt-right fa-10x" style={{fontSize:"50px"}}></i>
-                      </Col>
+                        <Col md className="col-md-1">
+                          <i className="fas fa-long-arrow-alt-right fa-10x" style={{fontSize:"50px"}}></i>
+                        </Col>
 
-                      <Col md className="col-md-3">
-                        <Row>
-                          <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"300px",marginLeft:"30px"}}>{row.arrival}</label>
-                        </Row>
-                        <Row>
-                          <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"30px"}}>{row.arrivalTime}</label>
-                        </Row> 
-                      </Col>
-                      <Col>
-                      
-                        <Button
-                          key={"Economy"}
-                          theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Economy" ? "secondary": "info"}
+                        <Col md className="col-md-3">
+                          <Row>
+                            <label style={{fontSize:"18px",fontWeight:"bold",color:"#339bb9",width:"300px",marginLeft:"30px"}}>{row.arrival}</label>
+                          </Row>
+                          <Row>
+                            <label style={{fontSize:"16px",fontWeight:"bold",width:"600px",color:" #656565",marginLeft:"30px"}}>{row.arrivalTime}</label>
+                          </Row> 
+                        </Col>
+                        <Col>
+                        
+                          <Button
+                            key={"Economy"}
+                            theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Economy" ? "secondary": "info"}
+                            className="mb-3"
+                            onClick={() => {
+
+                                this.setState({schedule: row.schedule});
+                                this.setState({classType: "Economy"});
+                                this.handleClick();
+                            }}
+                            invalid={validSchedule}  
+                          >
+                        
+                            <Row>Economy</Row><Row>LKR 12000</Row>
+                          </Button>&nbsp;&nbsp;&nbsp;
+
+                          <Button 
+                          key={"Business"}
+                          theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Business" ? "secondary": "info"}
+                          className="mb-3"
+                          onClick={() => {
+                            
+    
+                              this.setState({schedule: row.schedule});
+                              this.setState({classType: "Business"});
+                              this.handleClick();
+                            
+                          }}
+                          invalid={validSchedule}
+                          >
+                            <Row>Business</Row><Row>LKR 18000</Row>
+                            </Button>&nbsp;&nbsp;&nbsp;
+                          <Button 
+                          key={"Platinum"}
+                          theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Platinum" ? "secondary": "info"}
                           className="mb-3"
                           onClick={() => {
 
                               this.setState({schedule: row.schedule});
-                              this.setState({classType: "Economy"});
+                              this.setState({classType: "Platinum"});
+                              
                               this.handleClick();
                           }}
-                          invalid={validSchedule}  
-                        >
-                      
-                          <Row>Economy</Row><Row>LKR 12000</Row>
-                        </Button>&nbsp;&nbsp;&nbsp;
+                          invalid={validSchedule}
+                          >
 
-                        <Button 
-                        key={"Business"}
-                        theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Business" ? "secondary": "info"}
-                        className="mb-3"
-                        onClick={() => {
-                          
-   
-                            this.setState({schedule: row.schedule});
-                            this.setState({classType: "Business"});
-                            this.handleClick();
-                           
-                        }}
-                        invalid={validSchedule}
-                        >
-                          <Row>Business</Row><Row>LKR 18000</Row>
-                          </Button>&nbsp;&nbsp;&nbsp;
-                        <Button 
-                        key={"Platinum"}
-                        theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType=="Platinum" ? "secondary": "info"}
-                        className="mb-3"
-                        onClick={() => {
-
-                            this.setState({schedule: row.schedule});
-                            this.setState({classType: "Platinum"});
-                            
-                            this.handleClick();
-                        }}
-                        invalid={validSchedule}
-                        >
-
-                          <Row>Platinum</Row><Row>LKR 32000</Row>
-                        </Button>
-                      
-                      </Col>
-                    </Row>
-                  </Card>
+                            <Row>Platinum</Row><Row>LKR 32000</Row>
+                          </Button>
+                        
+                        </Col>
+                      </Row>
+                    </Card>
 
                   ))}
        
