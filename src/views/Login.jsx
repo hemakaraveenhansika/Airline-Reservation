@@ -48,7 +48,9 @@ class Login extends React.Component {
   state = {
     email: null,
     password: null,
-    userId:''
+    logstate:true,
+    userId:'',
+    airports:null,
 
   };
   constructor(props) {
@@ -59,15 +61,23 @@ class Login extends React.Component {
     if(this.validate()){
       axios.post("http://localhost:5000/login",{email:this.state.email,password:this.state.password}).then((response)=>
       {
-        console.log('RESPONSE',response.data.success);
-        console.log(this.state.email);
-      console.log(this.state.password);
+        if(response.data.success){
+          let tmpArray = []
+          for (var i = 0; i < response.data.data.length; i++) {
+              tmpArray.push(response.data.data[i]);
+          }
+          this.props.history.push({
+            pathname: '/user/home',
+            state: {airports:tmpArray },
+            
+          });
+        }else{
+          this.setState({ logstate:false }); 
+        }
+        
       })
       
-      this.props.history.push({
-        pathname: '/user/home',
-        state: { userId: 12 }
-      });
+      
       }
   }
 
@@ -75,15 +85,16 @@ class Login extends React.Component {
 
   
   validate() {
-    // if (this.validator.allValid()) {
-    //   if (moment(this.state.date) > moment(time)) {
-    //     return true;
-    //   }
-    // } else {
-    //   this.validator.showMessages();
-    //   this.forceUpdate();
-    // }
-    return true
+    if (this.validator.allValid()) {
+
+        return true;
+      
+    } else {
+      this.validator.showMessages();
+      this.forceUpdate();
+    }
+    
+
   }
 
   render() {
@@ -111,7 +122,7 @@ class Login extends React.Component {
     const validEmail = this.validator.message(
       "email",
       email,
-      "required|alpha"
+      "required|email"
     );
     const validPassword = this.validator.message(
       "password",
@@ -137,6 +148,7 @@ class Login extends React.Component {
 
             <Row form className="form-group pt-3">
               <Col md className="pr-0">
+                
                 <FormInput
                   style={inputstyle}
                   id="emailId"
@@ -146,6 +158,7 @@ class Login extends React.Component {
                   }}
                   invalid={validEmail}
                 />
+
               </Col>
             </Row>
             <Row form className="form-group pt-3">
@@ -162,6 +175,7 @@ class Login extends React.Component {
                 />
               </Col>
             </Row>
+            {!this.state.logstate ? <span style={{color: "red",marginLeft:"50px"}}>Worng username or password</span> : ''} 
 
             <Row form className="justify-content-end pt-3">
               <Button

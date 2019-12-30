@@ -41,7 +41,7 @@ const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
 
-class Confrim extends React.Component {
+class ViewBook extends React.Component {
   state = {
     schedule: null,
     className:'',
@@ -54,16 +54,16 @@ class Confrim extends React.Component {
     
 
     this.state = {
-      departure: this.props.location.state.departure,
-      arrival: this.props.location.state.arrival,
-      classType: this.props.location.state.classType,
-      passengers:this.props.location.state.passengers,
-      departureDate: this.props.location.state.departureDate,
-      scheduleId:this.props.location.state.scheduleId,
+      departure: 'Colombo',
+      arrival: 'DC',
+      classType: 2,
+      passengers:2,
+      departureDate: '2019-12-29',
+      // scheduleId:this.props.location.state.scheduleId,
       departureTime:'12.22',
       arrivalTime:'18.35',
       planeId:'P788e-B7',
-      detail: this.props.location.state.detail,
+      detail:[1,2],
 
     }
 
@@ -91,29 +91,26 @@ class Confrim extends React.Component {
       
     }
   }
-  validate() {
-    if (this.validator.allValid()) {
-      if (moment(this.state.date) > moment(time)) {
-        return true;
+
+  edit(reserveId,planeId,firstName,lastName,passportNo,age,seatNo,classType) {
+    this.props.history.push({
+      pathname: '/user/edit',
+      state: { 
+        reserveId:reserveId,
+        planeId:planeId,
+        firstName:firstName,
+        lastName:lastName,
+        passportNo:passportNo,
+        age:age,
+        seatNo:seatNo,
+        classType:classType
       }
-    } else {
-      this.validator.showMessages();
-      this.forceUpdate();
-    }
+    });
   }
 
-  handleClick(){
-    this.setState({
-      buttoncondition:!this.state.button
-    })
-  }
   render() {
 
-    
-
-
-
-
+  
     const cardstyle = {
  
       backgroundColor:" #e9eaea "
@@ -130,7 +127,7 @@ class Confrim extends React.Component {
     
     return (
 
-      <Card small className="mb-10 col-11" style={{marginTop:"100px"}}>
+      <Card small className="mb-10 col-12" style={{marginTop:"100px"}}>
         <CardHeader className="border-bottom" >               
             <label style={{fontSize:"30px",fontWeight:"bold",color:"#339bb9",width:"400px"}}>Review Your Book</label>                 
         </CardHeader>
@@ -160,11 +157,23 @@ class Confrim extends React.Component {
                       </Col>
                       <Col md className="col-md-2"><br/>
                         <label style={{fontSize:"20px",fontWeight:"bold",width:"300px",color:" #339bb9",marginLeft:"35px"}}>Passport No</label>
-                      </Col>                            
+                      </Col>
+                      <Col md className="col-md-2"><br/>
+                        <Button
+                            style={{width:"90px",marginLeft:"35px",marginTop:"5px"}}
+                            className="btn btn-warning btn-sm"
+                            onClick={() => {
+                              this.edit(1,"A340-600","Nimal","Perera",5445241,45,"E002",3);
+                            }}
+                          >
+                          Edit
+                        </Button>
+                      </Col>     
+                       
                     </Row>
                     <Row>
                       <Col md className="col-md-4">
-                  <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>{row.firstName} {row.lastName}</label>
+                        <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>Hashan Silva</label>
                       </Col>
                       <Col md className="col-md-2">
                         <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>{this.state.departureDate}</label>
@@ -173,26 +182,40 @@ class Confrim extends React.Component {
                         <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>{this.state.planeId}</label>
                       </Col>  
                       <Col md className="col-md-2">
-                        <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>{row.passportNo}</label>
+                        <label style={{fontSize:"18px",fontWeight:"bold",width:"300px",color:" #656565",marginLeft:"35px"}}>896545521</label>
                       </Col>                        
                     </Row>
                     <br/>     
                     <Row >
-                        <Col md className="col-md-2">
+                        <Col md className="col-md-2"><br/>
                           <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>From :</label>
                         </Col>
                       
-                        <Col md className="col-md-2">                      
+                        <Col md className="col-md-2"> <br/>                     
                           <label style={{fontSize:"18px",fontWeight:"bold",marginLeft:"-70px"}}>{this.state.departure} / {this.state.departureTime}</label>                                       
                         </Col>
-                        <Col md className="col-md-2">
+                        <Col md className="col-md-2"><br/>
                           <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>Seat</label>
                         </Col>
-                        <Col md className="col-md-2">
+                        <Col md className="col-md-2"><br/>
                           <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>Gate No</label>
                         </Col>
-                        <Col md className="col-md-2">
+                        <Col md className="col-md-2"><br/>
                           <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",marginLeft:"35px"}}>Age</label>
+                        </Col>
+                        <Col md className="col-md-2"><br/>
+                        <Button
+                          style={{width:"90px",marginLeft:"35px",marginTop:"0px"}}
+                          className="btn btn-danger btn-sm"
+                          onClick={() => {
+                            if(window.confirm('Delete the item?')){
+                              // this.delete(row.flightId);
+                            };
+                            
+                          }}
+                        >
+                          Remove
+                        </Button>
                         </Col>
                     </Row>
 
@@ -205,30 +228,19 @@ class Confrim extends React.Component {
                           <label style={{fontSize:"18px",fontWeight:"bold",marginLeft:"-70px"}}>{this.state.arrival}/ {this.state.arrivalTime}</label>                                       
                         </Col>
                         <Col md className="col-md-2">
-                          <label style={{fontSize:"20px",fontWeight:"bold",marginLeft:"35px"}}>{row.seatNo}</label>
+                          <label style={{fontSize:"20px",fontWeight:"bold",marginLeft:"35px"}}>B004</label>
                         </Col>
                         <Col md className="col-md-2">
                           <label style={{fontSize:"20px",fontWeight:"bold",marginLeft:"35px"}}>05</label>
                         </Col>
                         <Col md className="col-md-2">
-                          <label style={{fontSize:"20px",fontWeight:"bold",marginLeft:"35px"}}>{row.age}</label>
+                          <label style={{fontSize:"20px",fontWeight:"bold",marginLeft:"35px"}}>34</label>
                         </Col>
                     </Row>
                   </Card>
 
                 ))}
 
-            <Row form className="justify-content-end pt-3">
-              <Button
-                theme="primary"
-                className="mb-3"
-                onClick={() => {
-                  this.submit();
-                }}
-              >
-                Confirm
-              </Button>
-            </Row>
           </Form>
         </Col>
       </Card>
@@ -236,4 +248,4 @@ class Confrim extends React.Component {
   }
 }
 
-export default Confrim;
+export default ViewBook;

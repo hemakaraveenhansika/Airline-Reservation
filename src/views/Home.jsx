@@ -42,6 +42,7 @@ import {
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
+import axios from 'axios';
 
 const now = new Date();
 const time = new Date();
@@ -54,38 +55,82 @@ class Home extends React.Component {
     classType: '',
     passengers: '',
     departureDate: '',
+    airports:'',
+    nextstate:true
   };
 
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
+    this.state = {
+      airports:this.props.location.state.airports
+      // airports:[[1,"BIK"],[3,"JFK"]]
+
+    }
+    
+    
   }
 
   submit() {
     if(this.validate()){
-      
-      this.props.history.push({
-        pathname: '/user/view',
-        state: { 
-          userId: this.props.location.state.userId,
-          departure:this.state.departure,
-          arrival:this.state.arrival,
-          classType:this.state.classType,
-          passengers:this.state.passengers,
-          departureDate:this.state.departureDate}
-      });
+      var d = this.state.departureDate;
+      var date_fix = [d.getFullYear(),('0' + (d.getMonth() + 1)).slice(-2),('0' + d.getDate()).slice(-2)].join('-');
+      axios.post("http://localhost:5000/search_flight",{departureAirport:this.state.departure,arrivalAirport:this.state.arrival,departureDate:date_fix,passengers:this.state.passengers,requiredClass:this.state.classType}).then((response)=>
+      {
 
+        if(response.data.success){
+          let tmpArray = []
+          for (var i = 0; i < response.data.data.length; i++) {
+              tmpArray.push(response.data.data[i]);
+          }
+          console.log(response.data);
+          this.props.history.push({
+            pathname: '/user/view',
+            state: { 
+              // userId: this.props.location.state.userId,
+              departure:response.data.departure,
+              arrival:response.data.arrival,
+              classType:this.state.classType,
+              passengers:this.state.passengers,
+              departureDate:date_fix,
+              scheduleData:tmpArray[0],
+              prices:response.data.prices
+            }
+          });
+
+        
+        }else{
+          this.setState({ nextstate:false }); 
+        }
+        
+      })
+      
+      
       }
   }
-  validate() {
-    if (this.validator.allValid()) {
-      if (moment(this.state.departureDate) > moment(time)) {
-        return true;
-      }
-    } else {
-      this.validator.showMessages();
-      this.forceUpdate();
+
+  buildAirportsOptions() {
+    var arr = [];
+    var departure_data=this.state.airports;
+    
+    for (const [index, row_data] of departure_data.entries()) {   
+      arr.push(<option key={index} value={row_data[0]} >{row_data[1]}</option>)
     }
+
+    return arr; 
+  }
+
+
+  validate() {
+    // if (this.validator.allValid()) {
+    //   if (moment(this.state.departureDate) > moment(time)) {
+    //     return true;
+    //   }
+    // } else {
+    //   this.validator.showMessages();
+    //   this.forceUpdate();
+    // }
+    return true;
   
   }
   render() {
@@ -146,27 +191,36 @@ class Home extends React.Component {
 
             <Row form className="form-group pt-3">
               <Col md className="pr-0">
-                <FormInput
+                <FormSelect
                   style={inputstyle}
                   id="departureId"
                   placeholder="Departure"
-                  onChange={e => {
+                  onClick={e => {
                     this.setState({ departure: e.target.value });
                   }}
                   invalid={validDeparture}
-                />
+                >
+                    <option  disabled value="" >Departure</option>
+                    {this.buildAirportsOptions()}
+                                          
+                  </FormSelect>
+
               </Col>
 
               <Col md className="pr-0">
-                <FormInput
+                <FormSelect
                   style={inputstyle}
                   id="arrivalId"
                   placeholder="Arrival"
-                  onChange={e => {
+                  onClick={e => {
                     this.setState({ arrival: e.target.value });
                   }}
                   invalid={validArrival}
-                />
+                >
+                    <option  disabled value="" >Arrival</option>
+                    {this.buildAirportsOptions()}
+                                          
+                  </FormSelect>
               </Col>
             </Row>
 
@@ -183,9 +237,9 @@ class Home extends React.Component {
 
                   >
                     <option value="" >Class</option>
-                    <option value="Economy">Economy Class</option>
-                    <option value="Business ">Business Class</option>
-                    <option value="Platinum ">Platinum Class</option>
+                    <option value="2">Economy Class</option>
+                    <option value="3 ">Business Class</option>
+                    <option value="1">Platinum Class</option>
                   </FormSelect>
                 </Col>
 

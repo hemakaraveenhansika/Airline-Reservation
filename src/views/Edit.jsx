@@ -49,55 +49,32 @@ const now = new Date();
 const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
-const passengers=2;
 
-
-
-
-class Detail extends React.Component {
+class Edit extends React.Component {
   state = {
-      passengers:'',
-      age:'',
-      seatNo:'',
-      detail:[],
-      passengers:passengers 
+      firstName:this.props.location.state.firstName,
+      lastName:this.props.location.state.lastName,
+      passportNo:this.props.location.state.passportNo,
+      age:this.props.location.state.age,
+      seatNo:this.props.location.state.seatNo,
+      classType:this.props.location.state.classType
   };
   
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
-    this.updateDetail = this.updateDetail.bind(this);
+
     // console.log(this.props.location.state.userId);
 
   }
 
   submit() {
     if(this.validate()){
-      console.log(this.state.detail);
-      axios.post("http://localhost:5000/addPassengers",{user_ID:this.props.location.state.userId,passengerArr:this.state.detail}).then((response)=>
-      {
-        if(response.data.success){
-
-          console.log(response.data.success);
-          this.props.history.push({
-            pathname: '/user/confirm',
-            state: { 
-              userId: this.props.location.state.userId,
-              departure:this.props.location.state.departure,
-              arrival:this.props.location.state.arrival,
-              classType:this.props.location.state.classType,
-              passengers:this.props.location.state.passengers,
-              departureDate:this.props.location.state.departureDate,
-              detail:this.state.detail,
-              scheduleId:this.props.location.state.scheduleId
-            }
-          });
-
-        }
-        
-      })
-
-
+      this.props.history.push({
+        pathname: '/user/viewbook',
+      });
+    }else{
+      
     }
   }
 
@@ -115,9 +92,9 @@ class Detail extends React.Component {
 
   buildSeatNoOptions() {
     var arr = [];
-    var seat_data=this.props.location.state.seats;
+    // var seat_data=this.props.location.state.seats;
     
-
+    var seat_data=["E001","E002","E003"]
     for (const [index, value] of seat_data.entries()) {
       arr.push(<option key={index} value={value} >{value}</option>)
     }
@@ -125,24 +102,7 @@ class Detail extends React.Component {
     return arr; 
   }
 
-  updateDetail(event,index,passengers){
-    if(this.state.detail.length<passengers){
-      for (let i = 1; i <= passengers; i++) {
-        const newArray = update(this.state.detail, {$push: [{firstName:'',lastName:'',passportNo:'',age:'',seatNo:''}]});
-        this.state={detail:newArray}
-      }
-    }
 
-    let ndetail = update(this.state, {
-      detail: {    
-          [index.row-1]: {
-              [event.target.name] :{ $set:event.target.value }
-          }       
-      }
-    });
-    this.setState(ndetail);
-    
-  }
     
 
   render() {
@@ -161,15 +121,14 @@ class Detail extends React.Component {
     };
 
     const {
-      age,
+      firstName,
+      lastName,
       passportNo,
+      age,
       seatNo,
+      classType
     } = this.state;
 
-
-   
-
-    
     
     return (
       
@@ -181,23 +140,17 @@ class Detail extends React.Component {
         </CardHeader>
        
           <Form>
-          {rows.map(row => (
-            <Card key={row}>
-              <CardHeader >
-                <div>
-                  <label style={{fontSize:"20px",fontWeight:"bold",color:"#339bb9",width:"300px"}}>Passenger {row}</label>
-                </div>
-              </CardHeader>
+            <Card>
 
               <Row form className="form-group pt-3">
                 <Col md className="col-md-3">
                   <FormInput
                     style={{marginLeft:"30px"}}
                     id="firstNameId"
-                    placeholder="First Name"
+                    placeholder={this.state.firstName}
                     name="firstName"
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengers);                   
+                      this.setState({ firstName: e.target.value });                
                     }}
 
 
@@ -208,14 +161,31 @@ class Detail extends React.Component {
                   <FormInput
                     style={{marginLeft:"100px"}}
                     id="lastNameId"
-                    placeholder="Last Name"
+                    placeholder={this.state.lastName}
                     name="lastName"
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengers);             
+                      this.setState({ lastName: e.target.value });            
                     }}
 
   
                   />
+                </Col>
+                <Col md className="col-md-3">
+                  <FormSelect
+                    onChange={e => {
+                      this.setState({
+                        classType: e.target.value
+                      });
+                    }}
+                    // invalid={validClassType}
+                    style={{marginLeft:"170px"}}
+
+                  >
+                    <option value="" >Class</option>
+                    <option value="2">Economy Class</option>
+                    <option value="3 ">Business Class</option>
+                    <option value="1">Platinum Class</option>
+                  </FormSelect>
                 </Col>
 
               </Row>
@@ -225,10 +195,10 @@ class Detail extends React.Component {
                   <FormInput
                     style={{marginLeft:"30px"}}
                     id="passportId"
-                    placeholder="Passport No"
+                    placeholder={this.state.passportNo}
                     name="passportNo"
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengers);                   
+                      this.setState({ passportNo: e.target.value });                   
                     }}
 
 
@@ -239,10 +209,10 @@ class Detail extends React.Component {
                   <FormInput
                     style={{marginLeft:"100px"}}
                     id="ageId"
-                    placeholder="Age"
+                    placeholder={this.state.age}
                     name="age"
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengers);             
+                      this.setState({ age: e.target.value });         
                     }}
 
   
@@ -252,7 +222,7 @@ class Detail extends React.Component {
                 <Col md className="col-md-3">
                   <FormSelect
                     onChange={e => {
-                      this.updateDetail(e,{row},this.state.passengers);                 
+                      this.setState({ departure: e.target.value });                 
                     }}
                     style={{marginLeft:"170px"}}
                     name="seatNo"
@@ -264,7 +234,7 @@ class Detail extends React.Component {
                 </Col>
               </Row>
               </Card>
-            ))}
+
             <Row form className="justify-content-end pt-3">
               <Button
                 theme="primary"
@@ -286,4 +256,4 @@ class Detail extends React.Component {
   }
 }
 
-export default Detail;
+export default Edit;

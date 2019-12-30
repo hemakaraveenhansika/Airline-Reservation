@@ -65,63 +65,76 @@ time.setFullYear(now.getFullYear() - 18);
     },
   }))(TableRow);
 
-  function createData(plane_Name, model_Name, departure, arrival, departure_time, arrival_time,date,capacity) {
-    return { plane_Name, model_Name, departure, arrival, departure_time, arrival_time, date, capacity };
+  function createData(flightId,departure, arrival) {
+    return {flightId,departure, arrival};
   }
 
   const rows = [
-    createData('p01', 'm01', 'colombo', 'w dc', "12.00","17.50","2019-12-28",125),
-    
+    createData('f01','colombo', 'w dc'),
+    createData('f02','Mattala', 'Tokyo'),
   ];
 
 
 class Flight extends React.Component {
   state = {
+    flightId: null,
     departure: null,
     arrival: null,
-    classType: null,
-    passengers: null,
-    departureDate: null,
-    arrivalDate: null,
-
   };
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
   }
   submit() {
-    this.validate();
+    this.props.history.push({
+      pathname: '/admin/addflight',
+      state: { 
+        flightId:0}
+    });
   }
-  validate() {
-    
-  }
-  render() {
 
+  edit(flightId,departure,arrival) {
+    this.props.history.push({
+      pathname: '/admin/addflight',
+      state: { 
+        flightId:flightId,
+        departure:departure,
+        arrival:arrival}
+    });
+  }
+
+  delete(flightId) {
+  
+    console.log(flightId);
+  }
+
+  render() {
     const cardstyle = {
       marginTop:"100px",
     };
-
-    const {
-      arrival,
-      departureDate,
-      arrivalDate,
-      departure,
-      classType,
-      passengers
-    } = this.state;
-
-    console.log(this.state.nic);
-
     
     return (
 
       <Card small className="mb-10 col-11" style={cardstyle}>
         <CardHeader className="border-bottom">
         <div className="search">
-          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"200px"}}>View Flight</label>
+          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"300px"}}>View Flight</label>
         </div>
         </CardHeader>
-        <br/>
+
+          <Row form >
+              <Button
+                style={{marginLeft:"25px",marginTop:"25px"}}
+                theme="primary"
+                className="mb-3"
+                onClick={() => {
+                  this.submit();
+                }}
+              >
+                Add Flight
+              </Button>
+          </Row>
+
         <Col>
           <Form>   
             <br/>
@@ -129,27 +142,43 @@ class Flight extends React.Component {
               <Table className="tlb" aria-label="customized table">
                 <TableHead>
                   <TableRow>
-                    <StyledTableCell align="left" width="100px">Plane Name </StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Model Name </StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Departure </StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Arrival</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Departure Time&nbsp;</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Arrival Time&nbsp;</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Date&nbsp;</StyledTableCell>
-                    <StyledTableCell align="left" width="100px">Capacity&nbsp;</StyledTableCell>
+                    <StyledTableCell align="left" width="100px">Flight Id</StyledTableCell>
+                    <StyledTableCell align="left" width="200px">Departure </StyledTableCell>
+                    <StyledTableCell align="left" width="200px">Arrival</StyledTableCell>
+                    <StyledTableCell align="left" width="150px"></StyledTableCell>
+
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {rows.map(row => (
-                    <StyledTableRow key={row.name}>
-                      <StyledTableCell align="left" > {row.plane_Name} </StyledTableCell>
-                      <StyledTableCell align="left" >{row.model_Name}</StyledTableCell>
+                    <StyledTableRow key={row.flightId}>
+                      <StyledTableCell align="left" > {row.flightId} </StyledTableCell>
                       <StyledTableCell align="left" >{row.departure}</StyledTableCell>
                       <StyledTableCell align="left" >{row.arrival}</StyledTableCell>
-                      <StyledTableCell align="left" >{row.departure_time}</StyledTableCell>
-                      <StyledTableCell align="left" >{row.arrival_time}</StyledTableCell>
-                      <StyledTableCell align="left" >{row.date}</StyledTableCell>
-                      <StyledTableCell align="left" >{row.capacity}</StyledTableCell>
+                      <StyledTableCell align="left" >
+                        <Button
+                          style={{width:"80px"}}
+                          className="btn btn-warning btn-sm"
+                          onClick={() => {
+                            this.edit(row.flightId,row.departure,row.arrival);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                        <Button
+                          style={{marginLeft:"35px"}}
+                          className="btn btn-danger btn-sm"
+                          onClick={() => {
+                            if(window.confirm('Delete the item?')){
+                              this.delete(row.flightId);
+                            };
+                            
+                          }}
+                        >
+                          Delete
+                        </Button>
+                      </StyledTableCell>
+                      
                     </StyledTableRow>
                   ))}
                 </TableBody>

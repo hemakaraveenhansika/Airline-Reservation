@@ -131,9 +131,6 @@ class Schedule extends React.Component {
       classType,
       passengers
     } = this.state;
-
-    console.log(this.state.nic);
-
     
     return (
 

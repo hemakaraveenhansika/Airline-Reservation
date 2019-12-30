@@ -23,12 +23,15 @@ import View from "views/View.jsx";
 import Flight from "views/Flight.jsx";
 import Detail from "views/Detail.jsx";
 import Confirm from "views/Confirm.jsx";
+import AddFlight from "views/AddFlight.jsx";
 
 import UserPage from "views/User.jsx";
 import Schedule from "views/Schedule.jsx";
 import AddSchedule from "views/AddSchedule.jsx"
 import Passenger from "views/Passenger.jsx";
 import Report from "views/Report.jsx";
+import ViewBook from "views/ViewBook.jsx";
+import Edit from "views/Edit.jsx";
 
 var routes = [
 
@@ -40,10 +43,10 @@ var routes = [
     layout: "/user"
   },
   {
-    path: "/user-page",
-    name: "User Profile",
-    icon: "nc-icon nc-single-02",
-    component: UserPage,
+    path: "/viewbook",
+    name: "View Book",
+    icon: "fas fa-plane-departure",
+    component: ViewBook,
     layout: "/user"
   }
 ];
@@ -69,7 +72,14 @@ var user_routes = [
       icon: "nc-icon nc-bank",
       component: Confirm,
       layout: "/user"
-    }  
+    },
+    {
+        path: "/edit",
+        name: "Edit",
+        icon: "nc-icon nc-bank",
+        component: Edit,
+        layout: "/user"
+      }  
 ];
 
 var admin_routes = [
@@ -109,6 +119,12 @@ var admin_inner_routes = [
     name: "AddSchedule",
     icon: "fas fa-clock",
     component: AddSchedule,
+    layout: "/admin"
+  },{
+    path: "/addflight",
+    name: "AddFlight",
+    icon: "fas fa-clock",
+    component: AddFlight,
     layout: "/admin"
   }
 ];

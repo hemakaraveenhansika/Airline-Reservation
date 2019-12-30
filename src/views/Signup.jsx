@@ -59,16 +59,12 @@ class Signup extends React.Component {
     this.validator = new SimpleReactValidator();
   }
   submit() {
-    // if(this.validate()){
-    // this.props.history.push('/login');
-    // }
+
     if(this.validate()){
       console.log(this.state.firstName);
       axios.post("http://localhost:5000/register",{discount_ID:this.state.discount,first_name:this.state.firstName,last_name:this.state.lastName,address:this.state.address,email:this.state.email,password:this.state.password}).then((response)=>
       {
-        console.log('RESPONSE',response.data.success);
-        console.log(this.state.email);
-      console.log(this.state.password);
+        this.props.history.push('/access/login');
 
       })
       
