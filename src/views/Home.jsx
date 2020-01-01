@@ -25,20 +25,12 @@ import {
   CardHeader,
   Row,
   Button,
-  InputGroupText,
-  InputGroupAddon,
-  InputGroup,
+
   FormSelect,
-  FormGroup,
   DatePicker,
-  FormFeedback
+
 } from "shards-react";
 
-import {
-  dashboard24HoursPerformanceChart,
-  dashboardEmailStatisticsChart,
-  dashboardNASDAQChart
-} from "variables/charts.jsx";
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
@@ -48,6 +40,8 @@ const now = new Date();
 const time = new Date();
 time.setFullYear(now.getFullYear() - 18);
 
+const departure_data = [];
+
 class Home extends React.Component {
   state = {
     departure: '',
@@ -55,69 +49,101 @@ class Home extends React.Component {
     classType: '',
     passengers: '',
     departureDate: '',
-    airports:'',
-    nextstate:true
+    airports: '',
+    nextstate: true,
+    token: ''
   };
+
+  
 
   constructor(props) {
     super(props);
     this.validator = new SimpleReactValidator();
     this.state = {
-      airports:this.props.location.state.airports
-      // airports:[[1,"BIK"],[3,"JFK"]]
+      // airports:this.props.location.state.airports,
+      airports: [[1,"BIK"],[3,"JFK"]],
+      token: this.props.location.state.token,
 
     }
+
     
+    // this.getAirports();
     
+    // console.log(departure_data);
+
+
   }
 
   submit() {
-    if(this.validate()){
+    if (this.validate()) {
       var d = this.state.departureDate;
-      var date_fix = [d.getFullYear(),('0' + (d.getMonth() + 1)).slice(-2),('0' + d.getDate()).slice(-2)].join('-');
-      axios.post("http://localhost:5000/search_flight",{departureAirport:this.state.departure,arrivalAirport:this.state.arrival,departureDate:date_fix,passengers:this.state.passengers,requiredClass:this.state.classType}).then((response)=>
-      {
+      var date_fix = [d.getFullYear(), ('0' + (d.getMonth() + 1)).slice(-2), ('0' + d.getDate()).slice(-2)].join('-');
+      // const headers= {'Authorization' : 'Bearer ' + this.state.token};
 
-        if(response.data.success){
-          let tmpArray = []
-          for (var i = 0; i < response.data.data.length; i++) {
-              tmpArray.push(response.data.data[i]);
-          }
+      // console.log(config);
+      axios.post("http://localhost:5000/search_flight", {departureAirport: this.state.departure, arrivalAirport: this.state.arrival, departureDate: date_fix, passengers: this.state.passengers, requiredClass: this.state.classType }, {headers: {'Authorization': "Bearer " + this.state.token}})
+      .then((response) => {
+        if (response.data.success) {
           console.log(response.data);
+          let tmpArray = [];
+          for (var i = 0; i < response.data.data.length; i++) {
+            tmpArray.push(response.data.data[i]);
+          }
+          console.log(tmpArray);
+
           this.props.history.push({
             pathname: '/user/view',
-            state: { 
-              // userId: this.props.location.state.userId,
-              departure:response.data.departure,
-              arrival:response.data.arrival,
-              classType:this.state.classType,
-              passengers:this.state.passengers,
-              departureDate:date_fix,
-              scheduleData:tmpArray[0],
-              prices:response.data.prices
+            state: {
+              userId: this.props.location.state.userId,
+              departure: response.data.departure,
+              arrival: response.data.arrival,
+              classType: this.state.classType,
+              passengers: this.state.passengers,
+              departureDate: date_fix,
+              scheduleData: tmpArray,
+              prices: response.data.prices,
+              token:this.state.token
             }
           });
 
-        
-        }else{
-          this.setState({ nextstate:false }); 
+
+        } else {
+          this.setState({ nextstate: false });
         }
-        
+
       })
-      
-      
+    }
+  }
+
+  getAirports(){
+    this.departure_data=[];
+
+    axios.post("http://localhost:5000/getAirports", {departureAirport:2},{headers: {'Authorization': "Bearer " + this.state.token}})
+    .then((response) => {
+      if (response.data.success) {
+        console.log("kkk",(departure_data.length));
+        for (var i = 1; i < response.data.data.length; i++) {
+          
+          departure_data.push(response.data.data[i]);
+        }      
       }
+
+    })
+
   }
 
   buildAirportsOptions() {
     var arr = [];
-    var departure_data=this.state.airports;
-    
-    for (const [index, row_data] of departure_data.entries()) {   
+    // console.log("kkk",(departure_data.length));
+    var departure_data = this.state.airports;
+    // console.log("de",departure_data);
+
+
+    for (const [index, row_data] of departure_data.entries()) {
       arr.push(<option key={index} value={row_data[0]} >{row_data[1]}</option>)
     }
 
-    return arr; 
+    return arr;
   }
 
 
@@ -131,20 +157,22 @@ class Home extends React.Component {
     //   this.forceUpdate();
     // }
     return true;
-  
+
   }
   render() {
+
+    
 
     const mystyle = {
       width: "220px",
     };
 
     const cardstyle = {
-      marginTop:"100px",
+      marginTop: "100px",
     };
 
     const inputstyle = {
-      width:"400px",
+      width: "400px",
     };
 
     const {
@@ -167,24 +195,24 @@ class Home extends React.Component {
 
     const validClassType = this.validator.message(
       "classType",
-       classType,
-       "required"
+      classType,
+      "required"
     );
     const validPassenger = this.validator.message(
       "passengers",
       passengers,
-       "required"
+      "required"
     );
 
-    
-    
+
+
     return (
 
       <Card small className="mb-10 col-11" style={cardstyle}>
         <CardHeader className="border-bottom">
-        <div className="search">
-          <label style={{fontSize:"28px",fontWeight:"bold",color:"#339bb9",width:"200px"}}>Search Flight</label>
-        </div>
+          <div className="search">
+            <label style={{ fontSize: "28px", fontWeight: "bold", color: "#339bb9", width: "200px" }}>Search Flight</label>
+          </div>
         </CardHeader>
         <Col>
           <Form>
@@ -200,10 +228,10 @@ class Home extends React.Component {
                   }}
                   invalid={validDeparture}
                 >
-                    <option  disabled value="" >Departure</option>
-                    {this.buildAirportsOptions()}
-                                          
-                  </FormSelect>
+                  <option disabled value="" >Departure</option>
+                  {this.buildAirportsOptions()}
+
+                </FormSelect>
 
               </Col>
 
@@ -217,33 +245,33 @@ class Home extends React.Component {
                   }}
                   invalid={validArrival}
                 >
-                    <option  disabled value="" >Arrival</option>
-                    {this.buildAirportsOptions()}
-                                          
-                  </FormSelect>
+                  <option disabled value="" >Arrival</option>
+                  {this.buildAirportsOptions()}
+
+                </FormSelect>
               </Col>
             </Row>
 
             <Row form className="form-group pt-3">
               <Col md className="pl-0">
-                  <FormSelect
-                    onChange={e => {
-                      this.setState({
-                        classType: e.target.value
-                      });
-                    }}
-                    invalid={validClassType}
-                    style={inputstyle}
+                <FormSelect
+                  onChange={e => {
+                    this.setState({
+                      classType: e.target.value
+                    });
+                  }}
+                  invalid={validClassType}
+                  style={inputstyle}
 
-                  >
-                    <option value="" >Class</option>
-                    <option value="2">Economy Class</option>
-                    <option value="3 ">Business Class</option>
-                    <option value="1">Platinum Class</option>
-                  </FormSelect>
-                </Col>
+                >
+                  <option value="" >Class</option>
+                  <option value="2">Economy Class</option>
+                  <option value="3 ">Business Class</option>
+                  <option value="1">Platinum Class</option>
+                </FormSelect>
+              </Col>
 
-                <Col md className="pl-0">
+              <Col md className="pl-0">
                 <FormSelect
                   onChange={e => {
                     this.setState({
@@ -267,20 +295,20 @@ class Home extends React.Component {
 
             <Row form className="form-group pt-3">
               <Col>
-                  <DatePicker
-                    placeholderText="Departure Date"
-                    selected={departureDate}
-                    style={inputstyle}
-                    dateFormat="yyyy/MM/dd"
-                    className=""
-                    onChange={e => {
-                      this.setState({
-                        departureDate: new Date(e),
+                <DatePicker
+                  placeholderText="Departure Date"
+                  selected={departureDate}
+                  style={inputstyle}
+                  dateFormat="yyyy/MM/dd"
+                  className=""
+                  onChange={e => {
+                    this.setState({
+                      departureDate: new Date(e),
 
-                      });
-                    }}
-                  />
-                </Col>
+                    });
+                  }}
+                />
+              </Col>
 
             </Row>
 
@@ -298,7 +326,7 @@ class Home extends React.Component {
           </Form>
         </Col>
       </Card>
-      
+
     );
   }
 }

@@ -60,16 +60,16 @@ class Signup extends React.Component {
   }
   submit() {
 
-    if(this.validate()){
-      console.log(this.state.firstName);
-      axios.post("http://localhost:5000/register",{discount_ID:this.state.discount,first_name:this.state.firstName,last_name:this.state.lastName,address:this.state.address,email:this.state.email,password:this.state.password}).then((response)=>
-      {
-        this.props.history.push('/access/login');
+    // if(this.validate()){
+    //   console.log(this.state.firstName);
+    //   axios.post("http://localhost:5000/register",{discount_ID:this.state.discount,first_name:this.state.firstName,last_name:this.state.lastName,address:this.state.address,email:this.state.email,password:this.state.password}).then((response)=>
+    //   {
+    //     this.props.history.push('/access/login');
 
-      })
+    //   })
       
-      //  this.props.history.push('/user/home');
-      }
+    //   //  this.props.history.push('/user/home');
+    //   }
   }
   validate() {
     if (this.validator.allValid()) {

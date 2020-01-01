@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import {
   Col,
@@ -25,20 +7,9 @@ import {
   CardHeader,
   Row,
   Button,
-  InputGroupText,
-  InputGroupAddon,
-  InputGroup,
   FormSelect,
-  FormGroup,
-  DatePicker,
-  FormFeedback
-} from "shards-react";
 
-import {
-  dashboard24HoursPerformanceChart,
-  dashboardEmailStatisticsChart,
-  dashboardNASDAQChart
-} from "variables/charts.jsx";
+} from "shards-react";
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
@@ -73,12 +44,14 @@ class Detail extends React.Component {
 
   submit() {
     if(this.validate()){
-      console.log(this.state.detail);
-      axios.post("http://localhost:5000/addPassengers",{user_ID:this.props.location.state.userId,passengerArr:this.state.detail}).then((response)=>
+      
+      // console.log(this.state.detail);
+      axios.post("http://localhost:5000/addPassengers",{user_ID:this.props.location.state.userId,passengerArr:this.state.detail,schedule_ID:this.props.location.state.scheduleId,class_ID:this.props.location.state.classType}, {headers: {'Authorization': "Bearer " + this.props.location.state.token}}).then((response)=>
       {
         if(response.data.success){
 
-          console.log(response.data.success);
+          console.log(response);
+          console.log(response.data.total_price);
           this.props.history.push({
             pathname: '/user/confirm',
             state: { 
@@ -89,7 +62,12 @@ class Detail extends React.Component {
               passengers:this.props.location.state.passengers,
               departureDate:this.props.location.state.departureDate,
               detail:this.state.detail,
-              scheduleId:this.props.location.state.scheduleId
+              scheduleId:this.props.location.state.scheduleId,
+              departureTime:response.data.departure_time,
+              planeId:response.data.plane_ID,
+              arrivalTime:response.data.arrival_time,
+              totalPrice:response.data.total_price,
+              token: this.props.location.state.token
             }
           });
 

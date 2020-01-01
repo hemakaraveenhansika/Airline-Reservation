@@ -20,16 +20,11 @@ import React from "react";
 import {
   Col,
   Form,
-  FormInput,
   Card,
   CardHeader,
   Row,
   Button,
-  ButtonGroup, 
-  FormSelect,
-  FormGroup,
-  DatePicker,
-  FormFeedback
+
 } from "shards-react";
 
 import SimpleReactValidator from "simple-react-validator";
@@ -73,41 +68,50 @@ class View extends React.Component {
       passengers:this.props.location.state.passengers,
       departureDate:this.props.location.state.departureDate,
       scheduleData:this.props.location.state.scheduleData,
-      prices:this.props.location.state.prices
+      prices:this.props.location.state.prices,
+      token: this.props.location.state.token,
     }
 
 
     let scheduleData=this.state.scheduleData;
 
     console.log(this.state.scheduleData);
-    // for (const [index, row_data] of scheduleData.entries()) {   
-    //   console.log(row_data[3]);
-    //   rows.push(createData({index},this.state.departure, this.state.arrival,row_data[2], row_data[3]));
-    // }
-    rows.push(createData(scheduleData[0],scheduleData[1],this.state.departure, this.state.arrival,scheduleData[3], scheduleData[4]));
+    for (const [index, row_data] of scheduleData.entries()) {   
+      console.log(row_data[3]);
+      rows.push(createData(row_data[0],row_data[1],this.state.departure, this.state.arrival,row_data[3], row_data[4]));
+    }
+    // rows.push(createData(scheduleData[0],scheduleData[1],this.state.departure, this.state.arrival,scheduleData[3], scheduleData[4]));
     // console.log(scheduleData[0]);
   }
   submit() {
     if(this.validate()){
-      axios.post("http://localhost:5000/availableSeats",{schedule_ID:this.state.schedule,class_ID:this.state.classType}).then((response)=>
+      axios.post("http://localhost:5000/availableSeats",{schedule_ID:this.state.schedule,class_ID:this.state.classType}, {headers: {'Authorization': "Bearer " + this.state.token}}).then((response)=>
       {
         if(response.data.success){
+          // console.log(response);
           let seatArray = []
           for (var i = 0; i < response.data.data.length; i++) {
             seatArray.push(response.data.data[i]);
           }
-          // console.log(response.data.user_id[0].user_ID);
+          // console.log(response.data);
+          var jwt = require("jsonwebtoken");
+
+          var token =this.state.token;
+          var decode= jwt.decode(token);
+          console.log(decode);
+
           this.props.history.push({
             pathname: '/user/Detail',
             state: { 
-              userId: response.data.user_id[0].user_ID,
+              userId: this.props.location.state.userId,
               departure:this.state.departure,
               arrival:this.state.arrival,
               classType:this.state.classType,
               passengers:this.state.passengers,
               departureDate:this.state.departureDate,
               seats:seatArray,
-              scheduleId:this.state.scheduleId
+              scheduleId:this.state.schedule,
+              token:this.state.token
             }
           });
 
@@ -146,7 +150,6 @@ class View extends React.Component {
     const {
       schedule,
       classType,
-      buttoncondition,
     } = this.state;
 
     const validSchedule = this.validator.message(
@@ -154,11 +157,7 @@ class View extends React.Component {
       schedule,
       "required"
     );
-    const validClassType = this.validator.message(
-      "classType",
-      classType,
-      "required"
-    );
+
     
     return (
 
@@ -213,7 +212,7 @@ class View extends React.Component {
                         
                           <Button
                             key={"Economy"}
-                            theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType==2 ? "secondary": "info"}
+                            theme={this.state.buttoncondition && row.schedule===this.state.schedule && this.state.classType===2 ? "secondary": "info"}
                             className="mb-3"
                             onClick={() => {
 
@@ -229,7 +228,7 @@ class View extends React.Component {
 
                           <Button 
                           key={"Business"}
-                          theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType==3 ? "secondary": "info"}
+                          theme={this.state.buttoncondition && row.schedule===this.state.schedule && this.state.classType===3 ? "secondary": "info"}
                           className="mb-3"
                           onClick={() => {
                             
@@ -245,7 +244,7 @@ class View extends React.Component {
                             </Button>&nbsp;&nbsp;&nbsp;
                           <Button 
                           key={"Platinum"}
-                          theme={this.state.buttoncondition && row.schedule==this.state.schedule && this.state.classType==1 ? "secondary": "info"}
+                          theme={this.state.buttoncondition && row.schedule===this.state.schedule && this.state.classType===1 ? "secondary": "info"}
                           className="mb-3"
                           onClick={() => {
 

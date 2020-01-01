@@ -2,7 +2,7 @@ const db = require('../../core/db_connection');
 const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs')
-let json_response = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../response_format.json'), 'utf8'));
+let json_response = JSON.parse(fs.readFileSync(path.resolve(__dirname, '../../core/response_format.json'), 'utf8'));
 
 exports.register = async (req) => {
     async function registerUser(req) {
@@ -60,22 +60,22 @@ exports.login = async(req) => {
                             resolve(json_response);
 
                             //inserting airport ids and names into data array in json response
-                            let sql = `SELECT airport_ID, airport_code FROM airport`;
-                            db.query(sql,(err,result)=>{
-                                json_response.data=[];
-                                if(err){
-                                    console.log('an error occured');
-                                }
-                                else{
-                                    console.log(result);
-                                    for(i=0;i<result.length;i++){
-                                        temp=[];
-                                        temp.push(result[i]['airport_ID'],result[i]['airport_code']);
-                                        json_response.data.push(temp);
-                                        console.log(result[i]['airport_ID'],result[i]['airport_code']);
-                                    }
-                                }
-                            })
+                            // let sql = `SELECT airport_ID, airport_code FROM airport`;
+                            // db.query(sql,(err,result)=>{
+                            //     json_response.data=[];
+                            //     if(err){
+                            //         console.log('an error occured');
+                            //     }
+                            //     else{
+                            //         console.log(result);
+                            //         for(i=0;i<result.length;i++){
+                            //             temp=[];
+                            //             temp.push(result[i]['airport_ID'],result[i]['airport_code']);
+                            //             json_response.data.push(temp);
+                            //             console.log(result[i]['airport_ID'],result[i]['airport_code']);
+                            //         }
+                            //     }
+                            // })
                         }
                         else {
                             console.log('incorrect password');
@@ -96,7 +96,7 @@ exports.login = async(req) => {
                         reject(json_response);
                     }
                     else{
-                        json_response['user_id']=result;
+                        json_response['user_id']=result[0]['user_ID'];
                         resolve(json_response);
                     }
                 });
@@ -129,6 +129,7 @@ exports.searchFlight = async(req) => {
         let departureDate = req.body.departureDate;
         let passengers = req.body.passengers;
         let requiredClass = req.body.requiredClass;
+        console.log(req.body);
         let sqlDep = `SELECT airport_code FROM airport WHERE airport_ID='${departureAirport}'`;
         db.query(sqlDep,(err,result)=>{
             if(err){
@@ -213,22 +214,59 @@ exports.searchFlight = async(req) => {
     console.log('result in customer model: ',result);
     return result;
 }
-
 exports.addPassengers = async(req) => {
 
     async function addPassengers(req){
         return promise = new Promise((resolve,reject)=>{
-            //this should be updated
+            console.log('inside cust model');
+
+            //adding arrival time and departuretime to the response
+
+            let schedule_ID = req.body.schedule_ID;
+            console.log(schedule_ID);
+            let sql =`SELECT arrival_time,departure_time FROM schedule WHERE schedule_ID='${schedule_ID}'`;
+            db.query(sql,(err,result)=>{
+                if(err){
+                    console.log('error occured');
+                } else {
+                    json_response['arrival_time']=result[0]['arrival_time'];
+                    json_response['departure_time']=result[0]['departure_time'];
+                }
+            })
+
+            //select plane id
+            let sql2 = `SELECT plane_ID FROM plane_flight WHERE flight_ID=(SELECT flight_ID FROM schedule WHERE schedule_ID='${schedule_ID}')`;
+            db.query(sql2,(err,result)=>{
+                if(err){
+                    console.log('error occured');
+                } else {
+                    json_response['plane_ID']=result[0]['plane_ID'];
+                }
+            })
+
+            //calculate the price
             let numOfPassengeres = req.body.passengerArr.length;
+            let class_ID = req.body.class_ID;
+            let sqlPrices = `SELECT price FROM class WHERE class_ID='${class_ID}'`;
+            db.query(sqlPrices,(err,result)=>{
+                if(err){
+                    console.log('an error occured');
+                } else {
+                    json_response['total_price']=(result[0]['price']*numOfPassengeres);
+                }
+            })
+
+            //this should be updated
             let user_ID = req.body.user_ID;
-            console.log(user_ID);
             for(i=0;i<req.body.passengerArr.length;i++){
-                let first_name = req.body.passengerArr[i].firstName;
-                let last_name = req.body.passengerArr[i].lastName;
-                let passport_no = req.body.passengerArr[i].passportNo;
-                let age = req.body.passengerArr[i].age;
-                let seat_number = req.body.passengerArr[i].seatNo;
-                console.log(user_ID,first_name,last_name,passport_no,age,seat_number);
+                let first_name = req.body.passengerArr[i][0];
+                let last_name = req.body.passengerArr[i][1];
+                let passport_no = req.body.passengerArr[i][2];
+                let age = req.body.passengerArr[i][3];
+                let seat_number = req.body.passengerArr[i][4];
+                
+                //let className = req.body.className;
+
                 let sql = `INSERT INTO passenger (user_ID,first_name,last_name,passport_no,age,seat_number) VALUES ('${user_ID}','${first_name}','${last_name}','${passport_no}','${age}','${seat_number}')`;
                     db.query(sql,(err,result)=>{
                         if(err){
@@ -289,5 +327,135 @@ exports.availableSeats = async(req) => {
     }
     let result = await availableSeats(req);
     console.log('result: ',result);
+    return result;
+}
+
+exports.getAirports = async(req) => {
+    async function getAirports(req){
+        return promise = new Promise((resolve,reject)=>{
+            let sqlGetAirports = `SELECT airport_ID,airport_code FROM airport`;
+            db.query(sqlGetAirports,(err,result)=>{
+                if(err){
+                    console.log('error has occured');
+                    reject(err);
+                } else {
+                    console.log(result);
+                     for(i=0;i<result.length;i++){
+                         let temp=[];
+                         temp.push(result[i]['airport_ID']);
+                         temp.push(result[i]['airport_code']);
+                         json_response['data'].push(temp);
+                     }
+                    resolve(result);
+                }
+            })
+        }).then(()=>{
+            json_response['success']= true;
+            return json_response;
+        }).catch(()=>{
+            json_response['success']= false;
+            return json_response;
+
+        })
+    }
+    let result = await getAirports(req);
+    return result;
+}
+
+exports.changeSeat = async(req) => {
+    async function changeSeat(req){
+        return promise = new Promise((resolve,reject)=>{
+            let sqlSendSeats = `SELECT seat_number FROM seat WHERE plane_ID='${req.body.plane_ID}' AND class_ID='${req.body.class_ID}' AND status=0`;
+            db.query(sqlSendSeats,(err,result)=>{
+                if(err){
+                    console.log('an error occured');
+                    reject(err);
+                } else {
+                    console.log('result',result);
+                     for(i=0;i<result.length;i++){
+                         json_response['data'].push(result[i]['seat_number']);
+                     }
+                     resolve(json_response);
+                }
+            })
+        }).then(()=>{
+            json_response['success']=true;
+            return json_response;
+        }).catch(()=>{
+            json_response['success']=false;
+            return json_response;
+        })
+    }
+    let result = await changeSeat(req);
+    return result;
+}
+
+exports.removeReservation = async(req) => {
+    async function removeReservation(req){
+        return promise = new Promise((resolve,reject)=>{
+            let sqlResDelete = `DELETE FROM reserve WHERE reserve_ID='${req.body.reserve_ID}';`;
+            db.query(sqlResDelete,(err,result)=>{
+                if(err){
+                    console.log('an error occured: ',err);
+                    json_response['message']='couldbt delete the reservation as an error has been occured';
+                    json_response['success']=false;
+                    reject(json_response);
+                } else{
+                    json_response['message']='reservation deleted successfully';
+                    json_response['success']=true;
+                    resolve(json_response);
+                }
+            })
+        }).then(()=>{
+            return json_response;
+        }).catch(()=>{
+            return json_response;
+        })
+    }
+    let result = await removeReservation(req);
+    return result;
+}
+
+exports.editBook = async(req) => {
+    async function editBook(req){
+        return promise = new Promise((resolve,reject)=>{
+            let reserve_ID = req.body.reserve_ID;
+            let passenger_ID = req.body.passenger_ID;
+            let plane_ID = req.body.plane_ID;
+            let sql = `SELECT first_name,last_name,passport_no,age,seat_number FROM passenger WHERE passenger_ID='${passenger_ID}'`;
+            db.query(sql,(err,result)=>{
+                if(err){
+                    console.log('an error occured: ',err);
+                    //reject(json_response);
+                } else{
+                    json_response['first name']=result[0]['first_name'];
+                    json_response['last name']=result[0]['last_name'];
+                    json_response['passport number']=result[0]['passport_no'];
+                    json_response['age']=result[0]['age'];
+                    json_response['seat number']=result[0]['seat_number'];
+                    //resolve(json_response);
+                }
+            })
+
+            let sqlGetClass = `SELECT class_ID FROM seat WHERE seat_number=(SELECT seat_number FROM reserve WHERE reserve_ID='${reserve_ID}')`;
+            db.query(sqlGetClass,(err,result)=>{
+                if(err){
+                    console.log('an error occured: ',err);                
+                    reject(json_response);
+                } else {
+                    console.log('class id result: ',result[0]['class_ID']);
+                    json_response['class_ID']=result[0]['class_ID'];
+                    resolve(json_response);
+                }
+            })
+        }).then(()=>{
+            json_response['success'] = true;
+            return json_response;
+        }).catch(()=>{
+            json_response['success'] = false;
+            return json_response;
+        })
+    }
+    let result = await editBook(req);
     return result;
 }

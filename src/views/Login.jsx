@@ -1,21 +1,3 @@
-/*!
-
-=========================================================
-* Paper Dashboard React - v1.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/paper-dashboard-react
-* Copyright 2019 Creative Tim (https://www.creative-tim.com)
-
-* Licensed under MIT (https://github.com/creativetimofficial/paper-dashboard-react/blob/master/LICENSE.md)
-
-* Coded by Creative Tim
-
-=========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-*/
 import React from "react";
 import {
   Col,
@@ -25,16 +7,7 @@ import {
   CardHeader,
   Row,
   Button,
-  InputGroupText,
-  InputGroupAddon,
-  InputGroup,
-  FormSelect,
-  FormGroup,
-  DatePicker,
-  FormFeedback
 } from "shards-react";
-
-
 
 import SimpleReactValidator from "simple-react-validator";
 import moment from "moment";
@@ -62,13 +35,22 @@ class Login extends React.Component {
       axios.post("http://localhost:5000/login",{email:this.state.email,password:this.state.password}).then((response)=>
       {
         if(response.data.success){
-          let tmpArray = []
-          for (var i = 0; i < response.data.data.length; i++) {
-              tmpArray.push(response.data.data[i]);
-          }
+          // let tmpArray = []
+          // for (var i = 0; i < response.data.data.length; i++) {
+          //     tmpArray.push(response.data.data[i]);
+          // }
+          // console.log(response.data.user_id);
+
+          // var token=response.data.token;
+          // var jwt = require("jsonwebtoken");
+          // var decode = jwt.decode(token);
+          // console.log(decode);
+
           this.props.history.push({
             pathname: '/user/home',
-            state: {airports:tmpArray },
+            state: {token:response.data.token,
+            userId:response.data.user_id
+            },
             
           });
         }else{

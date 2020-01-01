@@ -60,10 +60,11 @@ class Confrim extends React.Component {
       passengers:this.props.location.state.passengers,
       departureDate: this.props.location.state.departureDate,
       scheduleId:this.props.location.state.scheduleId,
-      departureTime:'12.22',
-      arrivalTime:'18.35',
-      planeId:'P788e-B7',
+      departureTime:this.props.location.state.departureTime,
+      arrivalTime:this.props.location.state.arrivalTime,
+      planeId:this.props.location.state.planeId,
       detail: this.props.location.state.detail,
+      totalPrice:this.props.location.state.totalPrice,
 
     }
 
@@ -143,7 +144,8 @@ class Confrim extends React.Component {
   
                     <Col style={{backgroundColor:"#339bb9"}}>
                       <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",color:"#fcfbfb  "}}>Passenger {index+1}</label>
-                      <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",color:"#fcfbfb  ",marginLeft:"580px"}}>{this.state.classType==1 ? 'Platinum':this.state.classType==2 ?'Economy':'Business'} Class</label>
+                      <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",color:"#fcfbfb  ",marginLeft:"150px"}}>LKR {this.state.totalPrice/this.state.passengers}</label>
+                      <label style={{fontSize:"25px",fontWeight:"bold",width:"200px",color:"#fcfbfb  ",marginLeft:"250px"}}>{this.state.classType==1 ? 'Platinum':this.state.classType==2 ?'Economy':'Business'} Class</label>
                     </Col>
                   
 
@@ -217,6 +219,10 @@ class Confrim extends React.Component {
                   </Card>
 
                 ))}
+
+            <Row  className="justify-content-end pt-3">
+              <label style={{fontSize:"30px",fontWeight:"bold"}}>Total Price : LKR {this.state.totalPrice}</label>
+            </Row>
 
             <Row form className="justify-content-end pt-3">
               <Button
