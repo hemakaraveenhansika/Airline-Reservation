@@ -10,7 +10,7 @@
     "antd": "^3.26.3",
     "axios": "^0.19.0",
     "bootstrap": "4.3.1",
-    "chart.js": "2.8.0",
+    "chart.js": "2.9.4",
     "freegeoip-country-list": "^1.2.1",
     "history": "4.9.0",
     "immutability-helper": "^3.0.1",
